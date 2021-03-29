@@ -49,12 +49,13 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
         getPosition = position;
 
         dataBean = arrDataBean.get(position);
+        String name = dataBean.getName();
         holder.bindItem(dataBean);
         holder.mainListItemBinding.cardContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "You clicked " + dataBean.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You clicked " + name, Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -63,7 +64,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
             @Override
             public boolean onLongClick(View v) {
 
-                Toast.makeText(context, "You clicked " + dataBean.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You clicked " + name, Toast.LENGTH_SHORT).show();
 
                 return false;
             }
