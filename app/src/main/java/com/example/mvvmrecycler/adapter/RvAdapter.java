@@ -1,6 +1,7 @@
 package com.example.mvvmrecycler.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,29 +14,36 @@ import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.databinding.MainListItemBinding;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.mvvmrecycler.adapter.RvAdapter.*;
 
 public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
+    private SharedPreferences sP;
+    private SharedPreferences.Editor spEditor;
     private Context context;
-    private ArrayList<DataBean> arrDataBean;
+    private ArrayList<DataBean> arrData;
     private MainListItemBinding binding;
     private DataBean dataBean;
     private int getPosition;
 
-    public RvAdapter(ArrayList<DataBean> arrDataBean, Context context) {
-        this.arrDataBean = arrDataBean;
+    public RvAdapter(ArrayList<DataBean> arrData, Context context) {
+        this.arrData = arrData;
         this.context = context;
     }
 
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        sP = context.getSharedPreferences("deladditem", MODE_PRIVATE);
+
+        spEditor = sP.edit();
 
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.main_list_item,parent,false);
 
@@ -46,9 +54,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
-        getPosition = position;
-
-        dataBean = arrDataBean.get(position);
+        dataBean = arrData.get(position);
         String name = dataBean.getName();
         holder.bindItem(dataBean);
         holder.mainListItemBinding.cardContent.setOnClickListener(new View.OnClickListener() {
@@ -93,7 +99,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
     @Override
     public int getItemCount() {
-        return arrDataBean == null ? 0 : arrDataBean.size();
+        return arrData == null ? 0 : arrData.size();
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
@@ -112,39 +118,55 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
     }
 
-    public void addItem(){
+    public void addItem(int getArrSize){
 
-        if(dataBean.getName().length() == arrDataBean.size()){
+        String name = "";
 
-            Toast.makeText(context, " 已顯示最多筆資料, 故無法增加, 請見諒 ", Toast.LENGTH_LONG).show();
+        if(arrData.size() == getArrSize){
 
-        }else {
+            Toast.makeText(context, " 已顯示最多資料, 謝謝 ", Toast.LENGTH_LONG).show();
 
-            arrDataBean.add(getPosition, dataBean);
-            notifyItemInserted(getPosition); //增加Item
+        }else if(arrData.size() < getArrSize){
+
+            if(sP != null) {
+
+                getPosition = sP.getInt("position", 0);
+                arrData.add(getPosition, new DataBean(sP.getString("name", ""), sP.getString("number", ""), sP.getString("content", ""),"刪除"));
+                name = arrData.get(getPosition).getName();
+                dataBean = arrData.get(getItemCount() - 1);
+                binding.setVariable(BR.item, dataBean);
+                binding.executePendingBindings();
+                notifyItemInserted(getPosition);
+                //   spEditor.clear().apply();
+
+            }
 
         }
 
-        Log.d("TAG", "增加" + String.valueOf(dataBean.getName().length()));
-        Log.d("TAG", "增加" + String.valueOf(arrDataBean.size()));
+        Log.d("TAG", " 增加 getPosition" + String.valueOf(getPosition));
+        Log.d("TAG", " 增加 arrData Name" + name);
+        Log.d("TAG", " 增加 arrData.size" + String.valueOf(arrData.size()));
 
-        notifyDataSetChanged();
     }
 
     public void deleteItem(int position){
 
-        if (arrDataBean.size() == 1){
+        if (arrData.size() == 1){
 
-            Toast.makeText(context, " 最少顯示一筆資料, 故無法刪除, 請見諒 ", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_LONG).show();
 
         }else {
 
-            arrDataBean.remove(position);
-            notifyItemRemoved(position); //刪除Item
+            spEditor.putInt("position", position)
+                    .putString("name", arrData.get(position).getName())
+                    .putString("number", arrData.get(position).getNumber())
+                    .putString("content", arrData.get(position).getContent()).apply();
+
+            getPosition = position;
+            arrData.remove(position);
+            notifyItemRemoved(position);
 
         }
-
-        notifyDataSetChanged();
 
     }
 

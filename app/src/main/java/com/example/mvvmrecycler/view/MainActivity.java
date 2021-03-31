@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
         model.setTitle();
 
-        model.setBtn(binding);
-
         model.getData(binding);
+
+        model.setBtn(binding);
 
         binding.setModel(model);
 

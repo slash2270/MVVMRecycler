@@ -2,9 +2,9 @@ package com.example.mvvmrecycler.viewmodel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
-import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DataBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DataModel;
@@ -34,6 +34,8 @@ public class MainViewModel extends ViewModel{
     public String refresh, increase;
 
     private Context context;
+
+    private int getArrSize;
 
     public void initView(Activity activity){
 
@@ -77,10 +79,43 @@ public class MainViewModel extends ViewModel{
         refresh = "刷新";
         increase = "增加";
 
-   /*     binding.btnIncrease.setOnClickListener(this);
-        binding.btnIncrease.setOnLongClickListener(this);
-        binding.btnRefresh.setOnClickListener(this);
-        binding.btnRefresh.setOnLongClickListener(this);  */
+        binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                adapter.addItem(getArrSize);
+
+            }
+        });
+
+        binding.btnIncrease.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                adapter.addItem(getArrSize);
+
+                return false;
+            }
+        });
+
+        binding.btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getData(binding);
+
+            }
+        });
+
+        binding.btnRefresh.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                getData(binding);
+
+                return false;
+            }
+        });
 
     }
 
@@ -100,6 +135,9 @@ public class MainViewModel extends ViewModel{
         adapter = new RvAdapter(setData(), context);
         binding.mainRv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        getArrSize = arrBean.size();
+
+        Log.d("TAG", " 取得 getArrPosition" + String.valueOf(getArrSize));
 
     }
 

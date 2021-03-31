@@ -135,7 +135,7 @@ public class SlideRecyclerView  extends RecyclerView {
                             mScroller.startScroll(scrollX, 0, mMenuViewWidth - scrollX, 0, Math.abs(mMenuViewWidth - scrollX));
                         } else if (mVelocityTracker.getXVelocity() >= SNAP_VELOCITY) {  // 向右侧滑达到侧滑最低速度，则关闭
                             mScroller.startScroll(scrollX, 0, -scrollX, 0, Math.abs(scrollX));
-                        } else if (scrollX >= mMenuViewWidth) { // 如果超过删除按钮一半，则打开
+                        } else if (scrollX >= mMenuViewWidth / 3) { // 如果超过删除按钮一半，则打开
                             mScroller.startScroll(scrollX, 0, mMenuViewWidth - scrollX, 0, Math.abs(mMenuViewWidth - scrollX));
                         } else {    // 其他情况则关闭
                             mScroller.startScroll(scrollX, 0, -scrollX, 0, Math.abs(scrollX));
