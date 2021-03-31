@@ -57,6 +57,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
         dataBean = arrData.get(position);
         String name = dataBean.getName();
         holder.bindItem(dataBean);
+        holder.mainListItemBinding.tvDelete.setText("刪除");
         holder.mainListItemBinding.cardContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +132,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
             if(sP != null) {
 
                 getPosition = sP.getInt("position", 0);
-                arrData.add(getPosition, new DataBean(sP.getString("name", ""), sP.getString("number", ""), sP.getString("content", ""),"刪除"));
+                arrData.add(getPosition, new DataBean(sP.getString("name", ""), sP.getString("number", ""), sP.getString("content", "")));
                 name = arrData.get(getPosition).getName();
                 dataBean = arrData.get(getItemCount() - 1);
                 binding.setVariable(BR.item, dataBean);

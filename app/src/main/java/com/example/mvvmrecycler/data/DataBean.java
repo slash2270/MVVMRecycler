@@ -2,13 +2,12 @@ package com.example.mvvmrecycler.data;
 
 public class DataBean {
 
-    public String name, number, content, delete;
+    public String name, number, content;
 
-    public DataBean(String name, String number, String content, String delete) {
+    public DataBean(String name, String number, String content) {
         this.name = name;
         this.number = number;
         this.content = content;
-        this.delete = delete;
     }
 
     public String getName() {
@@ -33,14 +32,6 @@ public class DataBean {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public String getDelete() {
-        return delete;
-    }
-
-    public void setDelete(String delete) {
-        this.delete = delete;
     }
 
 }
