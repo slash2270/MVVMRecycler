@@ -149,12 +149,11 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
             intParamId = arrAdapter.get(position).getId();
             arrObjParamId = new Object[]{intParamId};
             dbManager.insertSQLite(context, db, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
+            arrAdapter.remove(position);
+            notifyItemRemoved(position);
+            notifyDataSetChanged();
 
         }
-
-        arrAdapter.remove(position);
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
 
     }
 
