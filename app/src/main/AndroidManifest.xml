@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MVVMRecycler">
-        <activity android:name=".view.ContentActivity"></activity>
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

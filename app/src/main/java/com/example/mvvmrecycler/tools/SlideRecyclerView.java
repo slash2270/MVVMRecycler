@@ -3,18 +3,12 @@ package com.example.mvvmrecycler.tools;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Scroller;
-import android.widget.TextView;
-
-import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SlideRecyclerView  extends RecyclerView {
 
-    private static final String TAG = "SlideRecyclerView";
     private static final int INVALID_POSITION = -1; // 触摸到的点不在子View范围内
     private static final int INVALID_CHILD_WIDTH = -1;  // 子ItemView不含两个子View
     private static final int SNAP_VELOCITY = 600;   // 最小滑动速度

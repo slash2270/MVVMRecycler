@@ -2,10 +2,12 @@ package com.example.mvvmrecycler.viewmodel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 
-import com.example.mvvmrecycler.data.DataBean;
+import com.example.mvvmrecycler.data.DBManager;
+import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
@@ -17,29 +19,38 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
+import static com.example.mvvmrecycler.data.DBConstant.MSG;
+import static com.example.mvvmrecycler.data.DBConstant.TAG;
+
 public class MainViewModel extends ViewModel{
 
     public final ObservableField<String> ovfName = new ObservableField<>();
     public final ObservableField<String> ovfNumber = new ObservableField<>();
     public final ObservableField<String> ovfContent = new ObservableField<>();
-
     public final ObservableBoolean isLoading = new ObservableBoolean(false);
 
     private final DataModel dataModel = new DataModel();
 
-    private ArrayList<DataBean> arrBean;
-
+    private ArrayList<MainBean> arrView;
     private RvAdapter adapter;
 
     public String refresh, increase;
 
     private Context context;
 
-    private int getArrSize;
+    SharedPreferences sP;
+    SharedPreferences.Editor spEditor;
+
+    private int arrActivitySize;
 
     public void initView(Activity activity){
 
         context = activity.getApplicationContext();
+
+        sP = context.getSharedPreferences("DelAddItem", MODE_PRIVATE);
+        spEditor = sP.edit();
 
     }
 
@@ -76,14 +87,16 @@ public class MainViewModel extends ViewModel{
 
     public void setBtn(MainActivityBinding binding){
 
+        DBManager dbManager = new DBManager();
+
         refresh = "刷新";
-        increase = "增加";
+        increase = "復原";
 
         binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                adapter.addItem(getArrSize);
+                adapter.addItem(arrActivitySize, arrView);
 
             }
         });
@@ -92,7 +105,7 @@ public class MainViewModel extends ViewModel{
             @Override
             public boolean onLongClick(View v) {
 
-                adapter.addItem(getArrSize);
+                adapter.addItem(arrActivitySize, arrView);
 
                 return false;
             }
@@ -102,6 +115,8 @@ public class MainViewModel extends ViewModel{
             @Override
             public void onClick(View v) {
 
+                spEditor.clear().apply();
+                dbManager.deleteDb(context, DATABASE_NAME);
                 getData(binding);
 
             }
@@ -111,6 +126,8 @@ public class MainViewModel extends ViewModel{
             @Override
             public boolean onLongClick(View v) {
 
+                spEditor.clear().apply();
+                dbManager.deleteDb(context, DATABASE_NAME);
                 getData(binding);
 
                 return false;
@@ -119,12 +136,12 @@ public class MainViewModel extends ViewModel{
 
     }
 
-    private ArrayList<DataBean> setData(){
+    private ArrayList<MainBean> setData(){
 
-        arrBean = new ArrayList<>();
-        dataModel.setRvData(arrBean);
+        arrView = new ArrayList<>();
+        dataModel.setRvData(arrView, context);
 
-        return arrBean;
+        return arrView;
 
     }
 
@@ -135,9 +152,9 @@ public class MainViewModel extends ViewModel{
         adapter = new RvAdapter(setData(), context);
         binding.mainRv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-        getArrSize = arrBean.size();
+        arrActivitySize = adapter.getItemCount();
 
-        Log.d("TAG", " 取得 getArrPosition" + String.valueOf(getArrSize));
+        Log.d(TAG, MSG + "getArrSize " + String.valueOf(arrActivitySize));
 
     }
 
