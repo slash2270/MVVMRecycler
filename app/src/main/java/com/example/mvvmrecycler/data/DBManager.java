@@ -228,7 +228,7 @@ public class DBManager {
 
                 cursor.moveToNext();
 
-                arrayList.add(id - 1, new MainBean(id, name, number, content)); //arr插入position位置
+                arrayList.add(new MainBean(id, name, number, content)); //arr插入position位置
 
             }
 
