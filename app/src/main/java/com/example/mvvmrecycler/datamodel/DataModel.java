@@ -37,7 +37,7 @@ public class DataModel {
 
  private int id, arrViewSize;
 
- public void getData(jsonData jsonData, MainActivityBinding binding, Context context, ArrayList<MainBean> arrView) {
+ public void getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Context context, ArrayList<MainBean> arrView) {
 
   RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -81,8 +81,8 @@ public class DataModel {
             rvAdapter.notifyDataSetChanged();
             arrViewSize = rvAdapter.getItemCount();
 
-            jsonData.addArrSize(arrViewSize);
-            jsonData.addRvAdapter(rvAdapter);
+            getAdapterSize.addArrSize(arrViewSize);
+            getAdapterSize.addRvAdapter(rvAdapter);
 
            }
           }, new Response.ErrorListener() {
@@ -98,7 +98,7 @@ public class DataModel {
 
  }
 
- public interface jsonData {
+ public interface GetAdapterSize{
 
   RvAdapter addRvAdapter(RvAdapter rvAdapter);
 
@@ -106,17 +106,17 @@ public class DataModel {
 
  }
 
- public void dataTitleBtn(dataCallBack callBack) {
+ public void setTextTitleBtn(SetTextTitleBtn setTextTitleBtn) {
 
   new Handler().post(new Runnable() {
    @Override
    public void run() {
 
-    callBack.number("Number");
-    callBack.title("Title");
-    callBack.url("Url");
-    callBack.increase("增加");
-    callBack.refresh("刷新");
+    setTextTitleBtn.number("Number");
+    setTextTitleBtn.title("Title");
+    setTextTitleBtn.url("Url");
+    setTextTitleBtn.increase("增加");
+    setTextTitleBtn.refresh("刷新");
 
    }
 
@@ -124,7 +124,7 @@ public class DataModel {
 
  }
 
- public interface dataCallBack {
+ public interface SetTextTitleBtn {
 
   void number(String number);
   void title(String title);

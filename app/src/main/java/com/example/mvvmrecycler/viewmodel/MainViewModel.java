@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
 
-public class MainViewModel extends ViewModel{
+public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize{
 
     public ObservableField<String> ovfNumber;
     public ObservableField<String> ovfTitle;
@@ -70,7 +70,7 @@ public class MainViewModel extends ViewModel{
 
         isLoading.set(true);
 
-        dataModel.dataTitleBtn(new DataModel.dataCallBack() {
+        dataModel.setTextTitleBtn(new DataModel.SetTextTitleBtn() {
             @Override
             public void number(String number) {
 
@@ -163,25 +163,7 @@ public class MainViewModel extends ViewModel{
 
         }
 
-        dataModel.getData(new DataModel.jsonData() {
-
-            @Override
-            public RvAdapter addRvAdapter(RvAdapter rvAdapter) {
-
-                adapter = rvAdapter;
-
-                return adapter;
-            }
-
-            @Override
-            public int addArrSize(int arrSize) {
-
-                arrViewSize = arrSize;
-
-                return arrViewSize;
-            }
-
-        },binding, context, arrView);
+        dataModel.getData(this,binding, context, arrView);
 
     }
 
@@ -189,6 +171,23 @@ public class MainViewModel extends ViewModel{
 
         binding.rv.setHasFixedSize(true);
         binding.rv.setLayoutManager(new LinearLayoutManager(binding.rv.getContext()));
+
+    }
+
+    @Override
+    public RvAdapter addRvAdapter(RvAdapter rvAdapter) {
+
+        adapter = rvAdapter;
+
+        return adapter;
+    }
+
+    @Override
+    public int addArrSize(int arrSize) {
+
+        arrViewSize = arrSize;
+
+        return arrViewSize;
 
     }
 

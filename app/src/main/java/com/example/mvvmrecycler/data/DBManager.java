@@ -4,7 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
 import android.util.Log;
+
+import com.example.mvvmrecycler.tools.AllConstant;
 
 import java.util.ArrayList;
 
@@ -15,9 +18,7 @@ import static com.example.mvvmrecycler.data.DBConstant.MAIN_ID;
 import static com.example.mvvmrecycler.data.DBConstant.MAIN_NUMBER;
 import static com.example.mvvmrecycler.data.DBConstant.MAIN_TITLE;
 import static com.example.mvvmrecycler.data.DBConstant.MAIN_URL;
-import static com.example.mvvmrecycler.data.DBConstant.MSG;
 import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_MAIN;
-import static com.example.mvvmrecycler.data.DBConstant.TAG;
 
 /**
  * DB語法有兩種請自行新增
@@ -25,12 +26,13 @@ import static com.example.mvvmrecycler.data.DBConstant.TAG;
  * writable/readable和db/cursor都只能調用一種
  */
 
-public class DBManager {
+public class DBManager{
 
     private DBHelper helper;
     private ContentValues cv;
     private String sql;
     private int id;
+    private Cursor cursor;
 
     /**
      * 取得SQLHelper
@@ -69,7 +71,7 @@ public class DBManager {
 
     public void insertSQLite(Context context, SQLiteDatabase db, String tableName, String columns, String questions, Object[] paramArgs){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getWritableDatabase();
 
         sql = "insert into " + tableName + " " + columns + " values " + questions;
@@ -81,7 +83,7 @@ public class DBManager {
 
     public void insertAndroid(Context context, SQLiteDatabase db, String tableName, ContentValues cv, String key, String value){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getWritableDatabase();
 
         cv.put(key, value);
@@ -93,7 +95,7 @@ public class DBManager {
 
     public void insertMain(Context context, SQLiteDatabase db, int id, String number, String title, String url, String color){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getWritableDatabase();
 
         cv = new ContentValues();
@@ -114,7 +116,7 @@ public class DBManager {
 
     public void deleteAndroid(Context context, SQLiteDatabase db, String tableName, String columnClause, String[] paramArgs){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getWritableDatabase();
 
         columnClause = columnClause + " = ?";
@@ -126,7 +128,7 @@ public class DBManager {
 
     public void deleteSQLite(Context context, SQLiteDatabase db, String tableName, String columns, String questions, Object[] paramArgs){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getWritableDatabase();
 
         sql = "delete from " + tableName + " where " + columns + " = " + questions;
@@ -140,9 +142,9 @@ public class DBManager {
      * 搜尋Table
      */
 
-    public Cursor selectAndroid(Context context, Cursor cursor, SQLiteDatabase db, String tableName){
+    public Cursor selectAndroid(Context context, SQLiteDatabase db, String tableName){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getReadableDatabase();
         cursor = db.query(tableName, null, null, null, null, null, null);
 
@@ -150,36 +152,24 @@ public class DBManager {
 
     }
 
-    public Cursor selectSQLite(Context context, Cursor cursor, SQLiteDatabase db, String tableName){
+    public Cursor selectSQLite(Context context, SQLiteDatabase db, String tableName){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getReadableDatabase();
         sql = "select * from " + tableName;
         cursor = db.rawQuery(sql, null);
 
         return cursor;
 
-    }
-
-    public Cursor selectRvCursorList(Context context, Cursor cursor, SQLiteDatabase db, ArrayList<Integer> arrayList, String tableName){
-
-        helper = getHelper(context);
-        db = helper.getReadableDatabase();
-        sql = "select * from " + tableName;
-        cursor = db.rawQuery(sql, null);
-
-        cursorRvList(cursor, arrayList);
-
-        return cursor;
     }
 
     /**
      * 搜尋 IN
      */
 
-    public Cursor inSQLite(Context context, SQLiteDatabase db, Cursor cursor, String tableName, String columns, Object params){
+    public Cursor inSQLite(Context context, SQLiteDatabase db, String tableName, String columns, Object params){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getReadableDatabase();
         sql = "select * from " + tableName + " where " + columns + " in " + "("+ params +")";
         cursor = db.rawQuery(sql, null);
@@ -188,26 +178,12 @@ public class DBManager {
 
     }
 
-    public Cursor inAndroid(Context context, SQLiteDatabase db, Cursor cursor, String tableName, String columns, String[] paramArgs){
+    public Cursor inAndroid(Context context, SQLiteDatabase db, String tableName, String columns, String[] paramArgs){
 
-        helper = getHelper(context);
+        getHelper(context);
         db = helper.getReadableDatabase();
         columns = columns + " = ?";
         cursor = db.query(tableName, null, columns, paramArgs, null, null, null);
-
-        return cursor;
-
-    }
-
-    public Cursor selectMainInCursorList(Context context, SQLiteDatabase db, Cursor cursor, String tableName, ArrayList<MainBean> arrayList, String columns, Object params){
-
-        helper = getHelper(context);
-        db = helper.getReadableDatabase();
-        sql = "select * from " + tableName + " where " + columns + " in " + "("+ params +")";
-        cursor = db.rawQuery(sql, null);
-        cursorMainList(cursor, arrayList);
-
-        Log.d(TAG, MSG + "IN " + sql);
 
         return cursor;
 
@@ -217,7 +193,7 @@ public class DBManager {
      * Cursor轉ArrayList
      */
 
-    public ArrayList<MainBean> cursorMainList(Cursor cursor, ArrayList<MainBean> arrayList){
+    public ArrayList<MainBean> cursorMainList(ArrayList<MainBean> arrayList){
 
         if (cursor != null) {
 
@@ -243,7 +219,7 @@ public class DBManager {
 
     }
 
-    public ArrayList<Integer> cursorRvList(Cursor cursor, ArrayList<Integer> arrayList){
+    public ArrayList<Integer> cursorRvList(ArrayList<Integer> arrayList){
 
         if (cursor.moveToFirst()) {
 
@@ -265,4 +241,26 @@ public class DBManager {
 
     }
 
+    public Cursor addCursor(Cursor cursor){
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+
+                addCursor(cursor);
+
+            }
+        });
+
+        return cursor;
+
+    }
+
+    public interface addCursor{
+
+        Cursor addCursor(Cursor adapterCursor);
+
+    }
+
 }
+

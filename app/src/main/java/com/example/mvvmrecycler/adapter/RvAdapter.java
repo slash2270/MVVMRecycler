@@ -28,7 +28,7 @@ import static com.example.mvvmrecycler.data.DBConstant.RV_ID;
 import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_MAIN;
 import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_RV;
 
-public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
+public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements DBManager.addCursor {
 
     private Function function;
     private DBManager dbManager;
@@ -41,6 +41,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
     private String strParamId, strQuestion;
     private Object[] arrObjParamId;
     private int intParamId;
+    private Cursor cursor;
 
     public RvAdapter(ArrayList<MainBean> arrAdapter, Context context) {
         this.arrAdapter = arrAdapter;
@@ -56,6 +57,8 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
         dbManager = new DBManager();
 
         function = new Function();
+
+        arrRv = new ArrayList<>();
 
         return new ItemViewHolder(binding);
 
@@ -115,6 +118,14 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
         return arrAdapter == null ? 0 : arrAdapter.size();
     }
 
+    @Override
+    public Cursor addCursor(Cursor adapterCursor) {
+
+        cursor = adapterCursor;
+
+        return cursor;
+    }
+
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 
         private MainListItemBinding mainListItemBinding;
@@ -160,16 +171,17 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
 
         } else if (arrAdapter.size() < arrActivitySize) {
 
-            Cursor cursor = null;
-            ArrayList<Integer> arrRv = new ArrayList<>();
-            dbManager.selectRvCursorList(context, cursor, db, arrRv, TABLE_NAME_RV);
+            dbManager.selectSQLite(context, db, TABLE_NAME_RV);
+            dbManager.cursorRvList(arrRv);
 
             for (intParamId = 0; intParamId < arrRv.size(); intParamId++) {
 
                 intParamId = arrRv.get(intParamId);
            //     Log.d(TAG, MSG + "intParamId " + String.valueOf(intParamId));
 
-                dbManager.selectMainInCursorList(context, db, cursor, TABLE_NAME_MAIN, arrAdapter, MAIN_ID, intParamId);
+                dbManager.inSQLite(context, db, TABLE_NAME_MAIN, MAIN_ID, intParamId);
+                dbManager.cursorMainList(arrAdapter);
+
                 mainBean = arrAdapter.get(getItemCount() - 1); // ItemCount比arrSize更不容易報錯
                 binding.setVariable(BR.item, mainBean);
                 binding.executePendingBindings();
@@ -182,4 +194,5 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> {
 
         }
     }
+
 }
