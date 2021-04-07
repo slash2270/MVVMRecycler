@@ -10,10 +10,11 @@ import java.util.ArrayList;
 
 import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
 import static com.example.mvvmrecycler.data.DBConstant.DATABASE_VERSION;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_CONTENT;
+import static com.example.mvvmrecycler.data.DBConstant.MAIN_COLOR;
 import static com.example.mvvmrecycler.data.DBConstant.MAIN_ID;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_NAME;
 import static com.example.mvvmrecycler.data.DBConstant.MAIN_NUMBER;
+import static com.example.mvvmrecycler.data.DBConstant.MAIN_TITLE;
+import static com.example.mvvmrecycler.data.DBConstant.MAIN_URL;
 import static com.example.mvvmrecycler.data.DBConstant.MSG;
 import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_MAIN;
 import static com.example.mvvmrecycler.data.DBConstant.TAG;
@@ -90,16 +91,17 @@ public class DBManager {
 
     }
 
-    public void insertMain(Context context, SQLiteDatabase db, int id, String name, String number, String content){
+    public void insertMain(Context context, SQLiteDatabase db, int id, String number, String title, String url, String color){
 
         helper = getHelper(context);
         db = helper.getWritableDatabase();
 
         cv = new ContentValues();
         cv.put(MAIN_ID, id);
-        cv.put(MAIN_NAME, name);
         cv.put(MAIN_NUMBER, number);
-        cv.put(MAIN_CONTENT, content);
+        cv.put(MAIN_TITLE, title);
+        cv.put(MAIN_URL, url);
+        cv.put(MAIN_COLOR, color);
 
         db.insert(TABLE_NAME_MAIN, null, cv);
         db.close();
@@ -222,13 +224,14 @@ public class DBManager {
             while(cursor.moveToNext()) {
 
                 id = cursor.getInt(cursor.getColumnIndex(DBConstant.MAIN_ID));
-                String name = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_NAME));
-                String number = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_NUMBER));
-                String content = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_CONTENT));
+                String number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
+                String title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
+                String url = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_URL));
+                String color = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_COLOR));
 
                 cursor.moveToNext();
 
-                arrayList.add(new MainBean(id, name, number, content)); //arr插入position位置
+                arrayList.add(id - 1, new MainBean(id, number, title, url, color)); //Bean插入position位置
 
             }
 

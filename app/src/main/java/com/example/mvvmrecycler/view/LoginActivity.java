@@ -2,7 +2,6 @@ package com.example.mvvmrecycler.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,10 +19,6 @@ public class LoginActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-
-        SharedPreferences sP = this.getSharedPreferences("DelAddItem", MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = sP.edit();
-        spEditor.clear().apply();
 
         delDb();
 

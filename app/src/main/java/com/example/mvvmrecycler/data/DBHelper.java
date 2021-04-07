@@ -28,9 +28,10 @@ public class DBHelper extends SQLiteOpenHelper{
         String mainSQL = "create table " + DBConstant.TABLE_NAME_MAIN+
                 "("
                 +DBConstant.MAIN_ID + " Integer primary key ,"
-                +DBConstant.MAIN_NAME + " varchar(20) ,"
                 +DBConstant.MAIN_NUMBER + " varchar(20) ,"
-                +DBConstant.MAIN_CONTENT + " varchar(200)" +
+                +DBConstant.MAIN_TITLE + " varchar(200) ,"
+                +DBConstant.MAIN_URL + " varchar(20) ,"
+                +DBConstant.MAIN_COLOR + " varchar(20)" +
                 ")";
         db.execSQL(mainSQL);
 

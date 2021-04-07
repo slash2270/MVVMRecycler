@@ -3,13 +3,14 @@ package com.example.mvvmrecycler.data;
 public class MainBean {
 
     public int id;
-    public String name, number, content;
+    public String number, title, url, color;
 
-    public MainBean(int id, String name, String number, String content) {
+    public MainBean(int id, String number, String title, String url, String color) {
         this.id = id;
-        this.name = name;
         this.number = number;
-        this.content = content;
+        this.title = title;
+        this.url = url;
+        this.color = color;
     }
 
     public int getId() {
@@ -20,14 +21,6 @@ public class MainBean {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getNumber() {
         return number;
     }
@@ -36,12 +29,28 @@ public class MainBean {
         this.number = number;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
 }

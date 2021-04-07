@@ -2,8 +2,7 @@ package com.example.mvvmrecycler.viewmodel;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.View;
 
 import com.example.mvvmrecycler.data.DBManager;
@@ -11,6 +10,7 @@ import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
+import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
 
@@ -19,64 +19,90 @@ import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import static android.content.Context.MODE_PRIVATE;
 import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
-import static com.example.mvvmrecycler.data.DBConstant.MSG;
-import static com.example.mvvmrecycler.data.DBConstant.TAG;
 
 public class MainViewModel extends ViewModel{
 
-    public final ObservableField<String> ovfName = new ObservableField<>();
-    public final ObservableField<String> ovfNumber = new ObservableField<>();
-    public final ObservableField<String> ovfContent = new ObservableField<>();
-    public final ObservableBoolean isLoading = new ObservableBoolean(false);
+    public ObservableField<String> ovfNumber;
+    public ObservableField<String> ovfTitle;
+    public ObservableField<String> ovfUrl;
+    public ObservableField<String> ovfRefresh;
+    public ObservableField<String> ovfIncrease;
+    public ObservableBoolean isLoading;
 
-    private final DataModel dataModel = new DataModel();
+    private Function function;
+
+    private Context context;
+
+    private DBManager dbManager;
+
+    private SQLiteDatabase db;
+
+    private DataModel dataModel;
 
     private ArrayList<MainBean> arrView;
     private RvAdapter adapter;
 
-    public String refresh, increase;
-
-    private Context context;
-
-    SharedPreferences sP;
-    SharedPreferences.Editor spEditor;
-
-    private int arrActivitySize;
+    private int arrViewSize;
 
     public void initView(Activity activity){
 
         context = activity.getApplicationContext();
 
-        sP = context.getSharedPreferences("DelAddItem", MODE_PRIVATE);
-        spEditor = sP.edit();
+        dataModel = new DataModel();
+        dbManager = new DBManager();
+
+        ovfNumber = new ObservableField<>();
+        ovfTitle = new ObservableField<>();
+        ovfUrl= new ObservableField<>();
+        ovfRefresh = new ObservableField<>();
+        ovfIncrease = new ObservableField<>();
+
+        isLoading = new ObservableBoolean(false);
+
+        function = new Function();
+
+        arrView = new ArrayList<>();
 
     }
 
-    public void setTitle(){
+    public void setTitleBtn(){
 
         isLoading.set(true);
 
-        dataModel.retrieveData(new DataModel.dataCallBack() {
+        dataModel.dataTitleBtn(new DataModel.dataCallBack() {
             @Override
-            public void nameData(String name) {
-
-                ovfName.set(name);
-
-            }
-
-            @Override
-            public void numberData(String number) {
+            public void number(String number) {
 
                 ovfNumber.set(number);
 
             }
 
             @Override
-            public void contentData(String content) {
+            public void title(String title) {
 
-                ovfContent.set(content);
+                ovfTitle.set(title);
+
+            }
+
+            @Override
+            public void url(String url) {
+
+                ovfUrl.set(url);
+
+            }
+
+            @Override
+            public void increase(String increase) {
+
+                ovfIncrease.set(increase);
+
+            }
+
+            @Override
+            public void refresh(String refresh) {
+
+                ovfRefresh.set(refresh);
 
             }
         });
@@ -85,18 +111,13 @@ public class MainViewModel extends ViewModel{
 
     }
 
-    public void setBtn(MainActivityBinding binding){
-
-        DBManager dbManager = new DBManager();
-
-        refresh = "刷新";
-        increase = "復原";
+    public void setBtnClick(MainActivityBinding binding){
 
         binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                adapter.addItem(arrActivitySize, arrView);
+                adapter.addItem(arrViewSize);
 
             }
         });
@@ -105,7 +126,7 @@ public class MainViewModel extends ViewModel{
             @Override
             public boolean onLongClick(View v) {
 
-                adapter.addItem(arrActivitySize, arrView);
+                adapter.addItem(arrViewSize);
 
                 return false;
             }
@@ -115,7 +136,6 @@ public class MainViewModel extends ViewModel{
             @Override
             public void onClick(View v) {
 
-                spEditor.clear().apply();
                 dbManager.deleteDb(context, DATABASE_NAME);
                 getData(binding);
 
@@ -126,35 +146,49 @@ public class MainViewModel extends ViewModel{
             @Override
             public boolean onLongClick(View v) {
 
-                spEditor.clear().apply();
                 dbManager.deleteDb(context, DATABASE_NAME);
                 getData(binding);
 
                 return false;
+
             }
         });
+    }
+
+    public void getData(MainActivityBinding binding){
+
+        if(arrViewSize > 0){
+
+            arrView.clear();
+
+        }
+
+        dataModel.getData(new DataModel.jsonData() {
+
+            @Override
+            public RvAdapter addRvAdapter(RvAdapter rvAdapter) {
+
+                adapter = rvAdapter;
+
+                return adapter;
+            }
+
+            @Override
+            public int addArrSize(int arrSize) {
+
+                arrViewSize = arrSize;
+
+                return arrViewSize;
+            }
+
+        },binding, context, arrView);
 
     }
 
-    private ArrayList<MainBean> setData(){
+    public void setRv(MainActivityBinding binding) {
 
-        arrView = new ArrayList<>();
-        dataModel.setRvData(arrView, context);
-
-        return arrView;
-
-    }
-
-    public void getData(MainActivityBinding binding) {
-
-        binding.mainRv.setHasFixedSize(true);
-        binding.mainRv.setLayoutManager(new LinearLayoutManager(binding.mainRv.getContext()));
-        adapter = new RvAdapter(setData(), context);
-        binding.mainRv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        arrActivitySize = adapter.getItemCount();
-
-        Log.d(TAG, MSG + "getArrSize " + String.valueOf(arrActivitySize));
+        binding.rv.setHasFixedSize(true);
+        binding.rv.setLayoutManager(new LinearLayoutManager(binding.rv.getContext()));
 
     }
 

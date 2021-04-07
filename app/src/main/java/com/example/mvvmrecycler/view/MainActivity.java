@@ -3,11 +3,11 @@ package com.example.mvvmrecycler.view;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DBManager;
+import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
@@ -29,11 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
         model.initView(this);
 
-        model.setTitle();
+        model.setTitleBtn();
+
+        model.setRv(binding);
 
         model.getData(binding);
 
-        model.setBtn(binding);
+        model.setBtnClick(binding);
 
         binding.setModel(model);
 
@@ -48,10 +50,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void delDb(){
-
-        SharedPreferences sP = this.getSharedPreferences("DelAddItem", MODE_PRIVATE);
-        SharedPreferences.Editor spEditor = sP.edit();
-        spEditor.clear().apply();
 
         DBManager dbManager = new DBManager();
         dbManager.deleteDb(getApplicationContext(), DATABASE_NAME);

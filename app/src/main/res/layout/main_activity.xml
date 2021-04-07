@@ -21,80 +21,79 @@
         tools:context=".view.MainActivity">
 
         <LinearLayout
-            android:weightSum="2"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
 
-        <androidx.cardview.widget.CardView
-            android:layout_weight="1"
-            android:id="@+id/card"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_margin="12dp"
-            android:paddingHorizontal="20dp"
-            app:cardCornerRadius="6dp"
-            app:cardElevation="12dp">
-
-            <LinearLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/card"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/deepgrey"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="3">
+                android:layout_height="60dp"
+                android:layout_margin="12dp"
+                android:paddingHorizontal="20dp"
+                app:cardCornerRadius="6dp"
+                app:cardElevation="12dp">
 
-                <TextView
-                    android:id="@+id/tvName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/deepgrey"
                     android:gravity="center"
-                    android:maxLength="20"
-                    android:maxLines="1"
-                    android:text="@{model.ovfName}"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/purple_500" />
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/tvNumber"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:maxLength="20"
-                    android:maxLines="1"
-                    android:text="@{model.ovfNumber}"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/purple_500" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:maxLength="20"
+                        android:maxLines="1"
+                        android:text="@{model.ovfNumber}"
+                        android:textColor="@color/purple_500"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvContent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:maxLength="20"
-                    android:maxLines="2"
-                    android:text="@{model.ovfContent}"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/purple_500" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:maxLength="20"
+                        android:maxLines="1"
+                        android:text="@{model.ovfTitle}"
+                        android:textColor="@color/purple_500"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:maxLength="20"
+                        android:maxLines="2"
+                        android:text="@{model.ovfUrl}"
+                        android:textColor="@color/purple_500"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-        </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-    <com.example.mvvmrecycler.tools.SlideRecyclerView
-        android:layout_weight="1"
-        android:id="@+id/mainRv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:scrollbars="vertical"
-        tools:itemCount="3" />
+            </androidx.cardview.widget.CardView>
+
+            <com.example.mvvmrecycler.tools.SlideRecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:scrollbars="vertical"
+                tools:itemCount="3" />
 
         </LinearLayout>
 
@@ -113,7 +112,7 @@
                 android:textColor="@color/deepgrey"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:text="@{model.increase}"
+                android:text="@{model.ovfIncrease}"
                 android:shadowColor="@color/purple_500"
                 android:layout_marginVertical="10dp"
                 android:layout_marginHorizontal="5dp"
@@ -127,7 +126,7 @@
                 android:textColor="@color/deepgrey"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                android:text="@{model.refresh}"
+                android:text="@{model.ovfRefresh}"
                 android:shadowColor="@color/purple_500"
                 android:layout_marginVertical="10dp"
                 android:layout_marginHorizontal="5dp"
