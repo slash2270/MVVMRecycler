@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.databinding.MainListItemBinding;
-import com.example.mvvmrecycler.tools.AllConstant;
 import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
@@ -123,12 +121,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
     }
 
     @Override
-    public Cursor addCursor(Cursor adapterCursor) {
-
-        cursor = adapterCursor;
-
-        return cursor;
-    }
+    public Cursor addCursor(Cursor adapterCursor) { cursor = adapterCursor;return cursor; }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
 

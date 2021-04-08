@@ -51,7 +51,7 @@ public class DataModel {
 
             try {
 
-             for (int i = 0; i < 15; i++) {
+             for (int i = 0; i < 100; i++) { // 資料長度可自由更改,最多5000筆
 
               JSONObject jsonObjContent = response.getJSONObject(i);
 

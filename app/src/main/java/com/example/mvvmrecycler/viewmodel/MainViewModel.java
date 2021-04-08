@@ -127,21 +127,10 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     }
 
     @Override
-    public RvAdapter addRvAdapter(RvAdapter rvAdapter) {
-
-        adapter = rvAdapter;
-
-        return adapter;
-    }
+    public RvAdapter addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter;return adapter; }
 
     @Override
-    public int addArrSize(int arrSize) {
-
-        arrViewSize = arrSize;
-
-        return arrViewSize;
-
-    }
+    public int addArrSize(int arrSize) { arrViewSize = arrSize;return arrViewSize; }
 
     public void setBtnClick(MainActivityBinding binding){
 

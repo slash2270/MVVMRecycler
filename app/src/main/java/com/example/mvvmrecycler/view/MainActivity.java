@@ -7,7 +7,6 @@ import android.os.Bundle;
 
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DBManager;
-import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
