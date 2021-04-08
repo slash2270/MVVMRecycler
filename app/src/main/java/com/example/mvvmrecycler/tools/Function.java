@@ -16,7 +16,7 @@ public class Function {
 
     }
 
-     public String getBackgroudColor(String color,String url){
+     public String getBackgroudColor(String color, String url){
 
              color = "#"+url.replace("https://via.placeholder.com/150/", "").trim();
 

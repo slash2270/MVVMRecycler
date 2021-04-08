@@ -195,19 +195,24 @@ public class DBManager{
 
     public ArrayList<MainBean> cursorMainList(ArrayList<MainBean> arrayList){
 
-        if (cursor != null) {
+        String number;
+        String title;
+        String url;
+        String color;
 
-            while(cursor.moveToNext()) {
+        if (cursor.moveToFirst()) {
+
+            for (int i = 0; i < cursor.getCount(); i++) {
 
                 id = cursor.getInt(cursor.getColumnIndex(DBConstant.MAIN_ID));
-                String number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
-                String title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
-                String url = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_URL));
-                String color = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_COLOR));
+                number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
+                title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
+                url = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_URL));
+                color = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_COLOR));
+
+                arrayList.add(new MainBean(id, number, title, url, color));
 
                 cursor.moveToNext();
-
-                arrayList.add(id - 1, new MainBean(id, number, title, url, color)); //Bean插入position位置
 
             }
 
@@ -215,7 +220,7 @@ public class DBManager{
 
         cursor.close();
 
-        return arrayList ;
+        return arrayList;
 
     }
 

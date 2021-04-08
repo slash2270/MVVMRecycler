@@ -35,9 +35,9 @@ public class DataModel {
 
  private String number, title , url, color;
 
- private int id, arrViewSize;
+ private int id;
 
- public void getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Context context, ArrayList<MainBean> arrView) {
+ public ArrayList<MainBean> getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Context context, ArrayList<MainBean> arrView) {
 
   RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -69,8 +69,6 @@ public class DataModel {
 
              }
 
-           //  Log.d(TAG, MSG + "getArrSize " + String.valueOf(arrView.size()));
-
             } catch (JSONException e) {
              e.printStackTrace();
 
@@ -79,9 +77,8 @@ public class DataModel {
             rvAdapter = new RvAdapter(arrView, context);
             binding.rv.setAdapter(rvAdapter);
             rvAdapter.notifyDataSetChanged();
-            arrViewSize = rvAdapter.getItemCount();
 
-            getAdapterSize.addArrSize(arrViewSize);
+            getAdapterSize.addArrSize(arrView.size());
             getAdapterSize.addRvAdapter(rvAdapter);
 
            }
@@ -96,9 +93,11 @@ public class DataModel {
 
   requestQueue.add(jsonArrayRequest);
 
+  return arrView;
+
  }
 
- public interface GetAdapterSize{
+ public interface GetAdapterSize{ // binding兩個model的值
 
   RvAdapter addRvAdapter(RvAdapter rvAdapter);
 
