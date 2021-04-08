@@ -149,13 +149,11 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
                         }
                         return i;
                     }
-
                     @Override
                     public boolean equals(Object obj) {
                         return false;
                     }
                 });
-
             }
         });
 
@@ -174,13 +172,11 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
                         }
                         return i;
                     }
-
                     @Override
                     public boolean equals(Object obj) {
                         return false;
                     }
                 });
-
                 return false;
             }
         });
