@@ -5,6 +5,8 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.mvvmrecycler.tools.Constant;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -25,19 +27,19 @@ public class DBHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String mainSQL = "create table " + DBConstant.TABLE_NAME_MAIN+
+        String mainSQL = "create table " + Constant.TABLE_NAME_MAIN+
                 "("
-                +DBConstant.MAIN_ID + " Integer primary key ,"
-                +DBConstant.MAIN_NUMBER + " varchar(20) ,"
-                +DBConstant.MAIN_TITLE + " varchar(200) ,"
-                +DBConstant.MAIN_URL + " varchar(20) ,"
-                +DBConstant.MAIN_COLOR + " varchar(20)" +
+                +Constant.MAIN_ID + " Integer primary key ,"
+                +Constant.MAIN_NUMBER + " varchar(20) ,"
+                +Constant.MAIN_TITLE + " varchar(200) ,"
+                +Constant.MAIN_URL + " varchar(20) ,"
+                +Constant.MAIN_COLOR + " varchar(20)" +
                 ")";
         db.execSQL(mainSQL);
 
-        String rvSQL = "create table " + DBConstant.TABLE_NAME_RV+
+        String rvSQL = "create table " + Constant.TABLE_NAME_RV+
                 "("
-                +DBConstant.RV_ID + " Integer" +
+                +Constant.RV_ID + " Integer" +
                 ")";
         db.execSQL(rvSQL);
 

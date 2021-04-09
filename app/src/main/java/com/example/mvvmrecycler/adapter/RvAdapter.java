@@ -25,10 +25,11 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.mvvmrecycler.adapter.RvAdapter.*;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_ID;
-import static com.example.mvvmrecycler.data.DBConstant.RV_ID;
-import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_MAIN;
-import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_RV;
+
+import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
+import static com.example.mvvmrecycler.tools.Constant.RV_ID;
+import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
+import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
 
 public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements DBManager.addCursor {
 
@@ -158,22 +159,31 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
     public void deleteItem(int position) {  // position屬於遞減性質,傳值取Data ID
 
-        if (arrAdapter.size() == 1) {
+        runnable = new Runnable() {
+            @Override
+            public void run() {
 
-            function.setToast(activity, context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_SHORT);
+                if (arrAdapter.size() == 1) {
 
-        } else {
+                    function.setToast(activity, context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_SHORT);
 
-            strParamId = "(" + RV_ID + ")";
-            strQuestion = "(?)";
-            intParamId = arrAdapter.get(position).getId();
-            arrObjParamId = new Object[]{intParamId};
-            dbManager.insertSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
-            arrAdapter.remove(position);
-            notifyItemRemoved(position);
-            notifyDataSetChanged();
+                } else {
 
-        }
+                    strParamId = "(" + RV_ID + ")";
+                    strQuestion = "(?)";
+                    intParamId = arrAdapter.get(position).getId();
+                    arrObjParamId = new Object[]{intParamId};
+                    dbManager.insertSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
+                    arrAdapter.remove(position);
+                    notifyItemRemoved(position);
+                    notifyDataSetChanged();
+
+                }
+
+            }
+        };
+
+        handler.post(runnable);
 
     }
 
@@ -204,6 +214,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
                 notifyDataSetChanged();
 
             }
+
         }
 
     }

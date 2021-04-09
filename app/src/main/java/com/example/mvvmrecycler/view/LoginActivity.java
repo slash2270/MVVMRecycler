@@ -11,7 +11,7 @@ import android.widget.Button;
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DBManager;
 
-import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
 public class LoginActivity extends AppCompatActivity{
 

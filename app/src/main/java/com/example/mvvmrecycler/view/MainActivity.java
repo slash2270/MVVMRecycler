@@ -10,7 +10,7 @@ import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
-import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
 public class MainActivity extends AppCompatActivity {
 

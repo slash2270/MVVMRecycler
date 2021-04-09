@@ -6,22 +6,24 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
+import com.example.mvvmrecycler.tools.Constant;
+
 import java.util.ArrayList;
 
-import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
-import static com.example.mvvmrecycler.data.DBConstant.DATABASE_VERSION;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_COLOR;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_ID;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_NUMBER;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_TITLE;
-import static com.example.mvvmrecycler.data.DBConstant.MAIN_URL;
-import static com.example.mvvmrecycler.data.DBConstant.TABLE_NAME_MAIN;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_VERSION;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_NUMBER;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_TITLE;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_URL;
+import static com.example.mvvmrecycler.tools.Constant.RV_ID;
 
 /**
  * DB語法有兩種請自行新增
  * 需注意DB和Helper必須每次都實體化
  * writable/readable和db/cursor都只能調用一種
- * Cursory因為是連續動作,在這裡切線程會卡
+ * Cursor必須在主線程
  */
 
 public class DBManager{
@@ -83,27 +85,6 @@ public class DBManager{
      * 新增Data
      */
 
-    public void insertSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                getHelper(context);
-                db = helper.getWritableDatabase();
-
-                sql = "insert into " + tableName + " " + columns + " values " + questions;
-
-                db.execSQL(sql, paramArgs);
-                db.close();
-
-            }
-        };
-
-        handler.post(runnable);
-
-    }
-
     public void insertAndroid(Context context, String tableName, ContentValues cv, String key, String value){
 
         runnable = new Runnable() {
@@ -127,7 +108,7 @@ public class DBManager{
 
     }
 
-    public void insertMain(Context context, int id, String number, String title, String url, String color){
+    public void insertSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
 
         runnable = new Runnable() {
             @Override
@@ -136,14 +117,9 @@ public class DBManager{
                 getHelper(context);
                 db = helper.getWritableDatabase();
 
-                cv = new ContentValues();
-                cv.put(MAIN_ID, id);
-                cv.put(MAIN_NUMBER, number);
-                cv.put(MAIN_TITLE, title);
-                cv.put(MAIN_URL, url);
-                cv.put(MAIN_COLOR, color);
+                sql = "insert into " + tableName + " " + columns + " values " + questions;
 
-                db.insert(TABLE_NAME_MAIN, null, cv);
+                db.execSQL(sql, paramArgs);
                 db.close();
 
             }
@@ -226,15 +202,6 @@ public class DBManager{
      * 搜尋 IN
      */
 
-    public void inSQLite(Context context, String tableName, String columns, Object params){
-
-        getHelper(context);
-        db = helper.getReadableDatabase();
-        sql = "select * from " + tableName + " where " + columns + " in " + "("+ params +")";
-        cursor = db.rawQuery(sql, null);
-
-    }
-
     public void inAndroid(Context context, String tableName, String columns, String[] paramArgs){
 
         dbColumns = columns;
@@ -243,6 +210,15 @@ public class DBManager{
         db = helper.getReadableDatabase();
         dbColumns = dbColumns + " = ?";
         cursor = db.query(tableName, null, dbColumns, paramArgs, null, null, null);
+
+    }
+
+    public void inSQLite(Context context, String tableName, String columns, Object params){
+
+        getHelper(context);
+        db = helper.getReadableDatabase();
+        sql = "select * from " + tableName + " where " + columns + " in " + "("+ params +")";
+        cursor = db.rawQuery(sql, null);
 
     }
 
@@ -256,11 +232,11 @@ public class DBManager{
 
             for (int i = 0; i < cursor.getCount(); i++) {
 
-                id = cursor.getInt(cursor.getColumnIndex(DBConstant.MAIN_ID));
+                id = cursor.getInt(cursor.getColumnIndex(MAIN_ID));
                 number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
                 title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
-                url = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_URL));
-                color = cursor.getString(cursor.getColumnIndex(DBConstant.MAIN_COLOR));
+                url = cursor.getString(cursor.getColumnIndex(MAIN_URL));
+                color = cursor.getString(cursor.getColumnIndex(MAIN_COLOR));
 
                 arrayList.add(new MainBean(id, number, title, url, color));
 
@@ -270,7 +246,7 @@ public class DBManager{
 
         }
 
-        cursor.close();
+        cursor.close(); // 先開後關
 
     }
 
@@ -280,7 +256,7 @@ public class DBManager{
 
             for (int i = 0; i < cursor.getCount(); i++) {
 
-                id = cursor.getInt(cursor.getColumnIndex(DBConstant.RV_ID));
+                id = cursor.getInt(cursor.getColumnIndex(RV_ID));
 
                 cursor.moveToNext();
 

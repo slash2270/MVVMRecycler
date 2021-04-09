@@ -3,8 +3,7 @@ package com.example.mvvmrecycler.viewmodel;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
-import android.util.Log;
+
 import android.view.View;
 
 import com.example.mvvmrecycler.data.DBManager;
@@ -15,15 +14,13 @@ import com.example.mvvmrecycler.databinding.MainActivityBinding;
 import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
 public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize{
 

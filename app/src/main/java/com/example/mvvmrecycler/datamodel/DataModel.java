@@ -16,6 +16,7 @@ import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
+import com.example.mvvmrecycler.tools.Constant;
 import com.example.mvvmrecycler.tools.Function;
 
 import org.json.JSONArray;
@@ -23,6 +24,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_NUMBER;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_TITLE;
+import static com.example.mvvmrecycler.tools.Constant.MAIN_URL;
+import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
 
 public class DataModel{
 
@@ -36,13 +44,14 @@ public class DataModel{
 
  private String number, title , url, color;
 
- private int id;
- private Handler handler;
- private Runnable runnable;
+ private int id, i;
+ private Handler handler, handler1;
+ private Runnable runnable,run;
 
  public void getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Activity activity, Context context, ArrayList<MainBean> arrView) {
 
   handler = new Handler();
+  handler1 = new Handler();
 
   RequestQueue requestQueue = Volley.newRequestQueue(context);
 
@@ -60,7 +69,7 @@ public class DataModel{
 
               try {
 
-               for (int i = 0; i < 100; i++) { // 資料長度可自由更改,最多5000筆
+               for (i = 0; i < 100; i++) { // 資料長度可自由更改,最多5000筆
 
                 JSONObject jsonObjContent = response.getJSONObject(i);
 
@@ -74,7 +83,10 @@ public class DataModel{
                 arrView.add(new MainBean(id, number, title, url, color));
 
                 //  依需求選擇DB是否存取本機資料
-                dbManager.insertMain(context, id, number, title, url, color);
+                Object[] objectArr= new Object[]{id, number, title, url, color};
+                String columns = "(" + MAIN_ID + ", " + MAIN_NUMBER + ", "+ MAIN_TITLE + ", " + MAIN_URL + ", " + MAIN_COLOR + ")";
+                String questions = "(?,?,?,?,?)";
+                dbManager.insertSQLite(context, TABLE_NAME_MAIN,columns, questions, objectArr);
 
                }
 

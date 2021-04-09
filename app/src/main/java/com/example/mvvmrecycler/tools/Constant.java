@@ -1,6 +1,10 @@
-package com.example.mvvmrecycler.data;
+package com.example.mvvmrecycler.tools;
 
-public class DBConstant {
+public class Constant {
+
+    // log
+    public static final String TAG = "tag";
+    public static final String MSG = "取得 + ";
 
     // db
     public static final String DATABASE_NAME = "rv.db";
