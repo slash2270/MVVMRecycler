@@ -3,6 +3,8 @@ package com.example.mvvmrecycler.viewmodel;
 import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import com.example.mvvmrecycler.data.DBManager;
@@ -10,6 +12,7 @@ import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
+import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,10 +28,6 @@ import static com.example.mvvmrecycler.data.DBConstant.DATABASE_NAME;
 public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize{
 
     public ObservableField<String> ovfNumber;
-    public ObservableField<String> ovfTitle;
-    public ObservableField<String> ovfUrl;
-    public ObservableField<String> ovfRefresh;
-    public ObservableField<String> ovfIncrease;
 
     public ObservableBoolean isLoading;
 
@@ -40,10 +39,15 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     private DataModel dataModel;
 
+    private Runnable runIncrease, runRefresh;
+
+    private Function function;
+
     private ArrayList<MainBean> arrView; //和arrAdapter屬於同步性質
     private RvAdapter adapter;
-
+    public String strTitle, strUrl, strRefresh, strIncrease;
     private int arrViewSize;
+
 
     public void initView(Activity activity){
 
@@ -53,22 +57,20 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
         dbManager = new DBManager();
 
         ovfNumber = new ObservableField<>();
-        ovfTitle = new ObservableField<>();
-        ovfUrl= new ObservableField<>();
-        ovfRefresh = new ObservableField<>();
-        ovfIncrease = new ObservableField<>();
 
         isLoading = new ObservableBoolean(false);
+
+        function = new Function();
 
         arrView = new ArrayList<>();
 
     }
 
-    public void setTitleBtn(){
+    public void setTitleBtn(Activity activity){
 
         isLoading.set(true);
 
-        dataModel.setTextTitleBtn(new DataModel.SetTextTitleBtn() {
+        dataModel.setTextTitleBtn(activity, new DataModel.SetTextTitleBtn() {
             @Override
             public void number(String number) {
 
@@ -77,45 +79,52 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
             }
 
             @Override
-            public void title(String title) {
+            public String title(String title) {
 
-                ovfTitle.set(title);
+                strTitle = title;
 
-            }
-
-            @Override
-            public void url(String url) {
-
-                ovfUrl.set(url);
+                return strTitle;
 
             }
 
             @Override
-            public void increase(String increase) {
+            public String url(String url) {
 
-                ovfIncrease.set(increase);
+                strUrl = url;
+
+                return strUrl;
 
             }
 
             @Override
-            public void refresh(String refresh) {
+            public String increase(String increase) {
 
-                ovfRefresh.set(refresh);
+                strIncrease = increase;
+
+                return strIncrease;
 
             }
+
+            @Override
+            public String refresh(String refresh) {
+
+                strRefresh = refresh;
+
+                return strRefresh;
+
+            }
+
         });
 
         isLoading.set(false);
 
     }
 
-    public ArrayList<MainBean> getData(MainActivityBinding binding){
+    public void getData(MainActivityBinding binding, Activity activity){
 
         arrView.clear();
 
-        dataModel.getData(this,binding, context, arrView);
-
-        return arrView;
+        dataModel.getData(this, binding, activity, context, arrView);
 
     }
 
@@ -132,76 +141,71 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     @Override
     public int addArrSize(int arrSize) { arrViewSize = arrSize;return arrViewSize; }
 
-    public void setBtnClick(MainActivityBinding binding){
+    public void setBtnClick(MainActivityBinding binding, Activity activity){
 
-        binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
+        runIncrease = (new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run(){
 
-                adapter.addItem(arrViewSize);
-
-                Collections.sort(arrView, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於 重新排序adapter裡的position
+                binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public int compare(MainBean o1, MainBean o2) {
-                        int i = o1.getId() - o2.getId();
-                        if(i == 0){
-                            return o1.getId() - o2.getId();
-                        }
-                        return i;
+                    public void onClick(View v) {
+
+                        adapter.addItem(arrViewSize);
+
+                        function.arrMainCompare(arrView);
+
                     }
+                });
+
+                binding.btnIncrease.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public boolean equals(Object obj) {
+                    public boolean onLongClick(View v) {
+
+                        adapter.addItem(arrViewSize);
+
+                        function.arrMainCompare(arrView);
+
                         return false;
                     }
                 });
+
             }
         });
 
-        binding.btnIncrease.setOnLongClickListener(new View.OnLongClickListener() {
+        runRefresh = (new Runnable() {
             @Override
-            public boolean onLongClick(View v) {
+            public void run() {
 
-                adapter.addItem(arrViewSize);
+                binding.btnRefresh.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                Collections.sort(arrView, new Comparator<MainBean>() {
-                    @Override
-                    public int compare(MainBean o1, MainBean o2) {
-                        int i = o1.getId() - o2.getId();
-                        if(i == 0){
-                            return o1.getId() - o2.getId();
-                        }
-                        return i;
-                    }
-                    @Override
-                    public boolean equals(Object obj) {
-                        return false;
+                        dbManager.deleteDb(context, DATABASE_NAME);
+                        getData(binding, activity);
+
                     }
                 });
-                return false;
-            }
-        });
 
-        binding.btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                binding.btnRefresh.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
 
-                dbManager.deleteDb(context, DATABASE_NAME);
-                getData(binding);
+                        dbManager.deleteDb(context, DATABASE_NAME);
+                        getData(binding, activity);
 
-            }
-        });
+                        return false;
 
-        binding.btnRefresh.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-
-                dbManager.deleteDb(context, DATABASE_NAME);
-                getData(binding);
-
-                return false;
+                    }
+                });
 
             }
         });
+
+        new Thread(runIncrease).start();
+        new Thread(runRefresh).start();
+
     }
 
 }
+

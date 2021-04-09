@@ -1,5 +1,6 @@
 package com.example.mvvmrecycler.datamodel;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -23,7 +24,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class DataModel {
+public class DataModel{
 
  private Function function = new Function();
 
@@ -36,64 +37,75 @@ public class DataModel {
  private String number, title , url, color;
 
  private int id;
+ private Handler handler;
+ private Runnable runnable;
 
- public ArrayList<MainBean> getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Context context, ArrayList<MainBean> arrView) {
+ public void getData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Activity activity, Context context, ArrayList<MainBean> arrView) {
+
+  handler = new Handler();
 
   RequestQueue requestQueue = Volley.newRequestQueue(context);
 
   String apiUrl = "https://jsonplaceholder.typicode.com/photos";
 
-  JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiUrl, null,
-          new Response.Listener<JSONArray>() {
+  runnable = (new Runnable() {
+   @Override
+   public void run() {
 
-           @Override
-           public void onResponse(final JSONArray response) {
+    JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiUrl, null,
+            new Response.Listener<JSONArray>() {
 
-            try {
+             @Override
+             public void onResponse(final JSONArray response) {
 
-             for (int i = 0; i < 100; i++) { // 資料長度可自由更改,最多5000筆
+              try {
 
-              JSONObject jsonObjContent = response.getJSONObject(i);
+               for (int i = 0; i < 100; i++) { // 資料長度可自由更改,最多5000筆
 
-              number = jsonObjContent.get("id").toString().trim();
-              title = jsonObjContent.get("title").toString().trim();
-              url = jsonObjContent.get("thumbnailUrl").toString().trim();
-              color = function.getBackgroudColor(color, url);
-              url = function.getUrl(url);
-              id = Integer.parseInt(number);
+                JSONObject jsonObjContent = response.getJSONObject(i);
 
-              arrView.add(new MainBean(id, number, title, url, color));
+                number = jsonObjContent.get("id").toString().trim();
+                title = jsonObjContent.get("title").toString().trim();
+                url = jsonObjContent.get("thumbnailUrl").toString().trim();
+                color = function.getBackgroudColor(color, url);
+                url = function.getUrl(url);
+                id = Integer.parseInt(number);
 
-              //  依需求選擇DB是否存取本機資料
-              dbManager.insertMain(context, db, id, number, title, url, color);
+                arrView.add(new MainBean(id, number, title, url, color));
+
+                //  依需求選擇DB是否存取本機資料
+                dbManager.insertMain(context, id, number, title, url, color);
+
+               }
+
+              } catch (JSONException e) {
+               e.printStackTrace();
+
+              }
+
+              rvAdapter = new RvAdapter(activity, arrView, context);
+              binding.rv.setAdapter(rvAdapter);
+              rvAdapter.notifyDataSetChanged();
+
+              getAdapterSize.addArrSize(arrView.size());
+              getAdapterSize.addRvAdapter(rvAdapter);
 
              }
+            }, new Response.ErrorListener() {
+     @Override
+     public void onErrorResponse(VolleyError error) {
 
-            } catch (JSONException e) {
-             e.printStackTrace();
+      function.setToast(activity, context, " 載入資料錯誤, 請檢查網路或聯絡資訊相關人員, 謝謝 ", Toast.LENGTH_SHORT);
 
-            }
+     }
+    });
 
-            rvAdapter = new RvAdapter(arrView, context);
-            binding.rv.setAdapter(rvAdapter);
-            rvAdapter.notifyDataSetChanged();
-
-            getAdapterSize.addArrSize(arrView.size());
-            getAdapterSize.addRvAdapter(rvAdapter);
-
-           }
-          }, new Response.ErrorListener() {
-   @Override
-   public void onErrorResponse(VolleyError error) {
-
-    function.setToast(context, " 載入資料錯誤, 請檢查網路或聯絡資訊相關人員, 謝謝 ", Toast.LENGTH_SHORT);
+    requestQueue.add(jsonArrayRequest);
 
    }
   });
 
-  requestQueue.add(jsonArrayRequest);
-
-  return arrView;
+  handler.post(runnable);
 
  }
 
@@ -105,31 +117,32 @@ public class DataModel {
 
  }
 
- public void setTextTitleBtn(SetTextTitleBtn setTextTitleBtn) {
+ public void setTextTitleBtn(Activity activity, SetTextTitleBtn setTextTitleBtn) {
 
-  new Handler().post(new Runnable() {
-   @Override
-   public void run() {
+  runnable = new Runnable() {
+      @Override
+      public void run() {
 
-    setTextTitleBtn.number("Number");
-    setTextTitleBtn.title("Title");
-    setTextTitleBtn.url("Url");
-    setTextTitleBtn.increase("增加");
-    setTextTitleBtn.refresh("刷新");
+       setTextTitleBtn.number("Number");
+       setTextTitleBtn.title("Title");
+       setTextTitleBtn.url("Url");
+       setTextTitleBtn.increase("增加");
+       setTextTitleBtn.refresh("刷新");
 
-   }
+      }
+     };
 
-  });
+    activity.runOnUiThread(runnable);
 
  }
 
  public interface SetTextTitleBtn {
 
   void number(String number);
-  void title(String title);
-  void url(String url);
-  void increase(String increase);
-  void refresh(String refresh);
+  String title(String title);
+  String url(String url);
+  String increase(String increase);
+  String refresh(String refresh);
 
  }
 

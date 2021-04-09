@@ -28,13 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
         model.initView(this);
 
-        model.setTitleBtn();
+        model.setTitleBtn(this);
 
         model.setRv(binding);
 
-        model.getData(binding);
+        model.getData(binding, this);
 
-        model.setBtnClick(binding);
+        model.setBtnClick(binding, this);
 
         binding.setModel(model);
 

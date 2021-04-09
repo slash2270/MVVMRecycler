@@ -1,18 +1,63 @@
 package com.example.mvvmrecycler.tools;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.Looper;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.mvvmrecycler.data.MainBean;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Function {
 
-    public void setToast(Context context, String text, int duration){
+    public boolean isMainLooper() {
 
-        Toast.makeText(context, text, duration).show();
+        return  Looper.getMainLooper() == Looper.myLooper();
+
+    }
+
+    public boolean isMainThread() {
+
+        return  Looper.getMainLooper().getThread() == Thread.currentThread();
+
+    }
+
+    public void arrMainCompare(ArrayList<MainBean>arrayList){
+
+        Collections.sort(arrayList, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於 重新排序adapter裡的position
+            @Override
+            public int compare(MainBean o1, MainBean o2) {
+                int i = o1.getId() - o2.getId();
+                if(i == 0){
+                    return o1.getId() - o2.getId();
+                }
+                return i;
+            }
+            @Override
+            public boolean equals(Object obj) {
+                return false;
+            }
+        });
+
+    }
+
+    public void setToast(Activity activity, Context context, String text, int duration){
+
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                Toast.makeText(context, text, duration).show();
+
+            }
+        });
 
     }
 
