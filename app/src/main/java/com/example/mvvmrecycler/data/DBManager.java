@@ -56,6 +56,7 @@ public class DBManager{
     /**
      * 設置DB路徑
      */
+    
 /*
     public void openDB(Context context, String DBHath) {
         String path = context.getDatabasePath(DBHath).getPath();
