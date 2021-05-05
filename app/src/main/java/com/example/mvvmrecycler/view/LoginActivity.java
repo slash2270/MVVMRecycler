@@ -22,7 +22,8 @@ public class LoginActivity extends AppCompatActivity{
 
         delDb();
 
-        setBtn();
+        AddBtn addBtn = new AddBtn();
+        addBtn.setBtn();
 
     }
 
@@ -33,24 +34,29 @@ public class LoginActivity extends AppCompatActivity{
 
     }
 
-    private void setBtn(){
+    public class AddBtn{
 
-        Button btnLogin = findViewById(R.id.btnLogin);
+        public void setBtn(){
 
-        btnLogin.setGravity(Gravity.CENTER);
-        btnLogin.setText("登入");
-        btnLogin.setTextSize(20);
-        btnLogin.setTextColor(Color.parseColor("#B4B4B4"));
-        btnLogin.getPaint().setFakeBoldText(true);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            Button btnLogin = findViewById(R.id.btnLogin);
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+            btnLogin.setGravity(Gravity.CENTER);
+            btnLogin.setText("登入");
+            btnLogin.setTextSize(20);
+            btnLogin.setTextColor(Color.parseColor("#B4B4B4"));
+            btnLogin.getPaint().setFakeBoldText(true);
+            btnLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-            }
-        });
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+
+        }
+
 
     }
 

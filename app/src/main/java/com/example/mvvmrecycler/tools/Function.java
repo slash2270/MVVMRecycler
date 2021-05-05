@@ -29,7 +29,7 @@ public class Function {
 
     }
 
-    public void arrMainCompare(ArrayList<MainBean>arrayList){
+    public static void arrMainCompare(ArrayList<MainBean>arrayList){
 
         Collections.sort(arrayList, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於 重新排序adapter裡的position
             @Override
@@ -48,7 +48,7 @@ public class Function {
 
     }
 
-    public void setToast(Activity activity, Context context, String text, int duration){
+    public static void setToast(Activity activity, Context context, String text, int duration){
 
         activity.runOnUiThread(new Runnable() {
             @Override
@@ -61,7 +61,7 @@ public class Function {
 
     }
 
-     public String getBackgroudColor(String color, String url){
+     public static String getBackgroundColor(String color, String url){
 
              color = "#"+url.replace("https://via.placeholder.com/150/", "").trim();
 
@@ -83,13 +83,13 @@ public class Function {
 
      }
 
-     public String getUrl(String url){
+     public static String getUrl(String url){
 
          url = url.replace("https://via.placeholder.com/", "").trim();
 
-         StringBuffer sbThumUrl = new StringBuffer(url);
+         StringBuilder sbUrl = new StringBuilder(url);
 
-         url = sbThumUrl.replace(3, 10, "").toString().trim();
+         url = sbUrl.replace(3, 10, "").toString().trim();
          url = url + " x " + url;
 
          return url;

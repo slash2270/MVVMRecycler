@@ -3,7 +3,6 @@ package com.example.mvvmrecycler.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -16,7 +15,6 @@ import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.databinding.MainListItemBinding;
-import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
 
@@ -24,30 +22,26 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.example.mvvmrecycler.adapter.RvAdapter.*;
-
 import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
 import static com.example.mvvmrecycler.tools.Constant.RV_ID;
 import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
 import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
+import static com.example.mvvmrecycler.tools.Function.setToast;
 
 public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements DBManager.addCursor {
 
-    private Function function;
     private DBManager dbManager;
-    private SQLiteDatabase db;
-    private Activity activity;
-    private Context context;
-    private ArrayList<MainBean> arrAdapter;
+    private final Activity activity;
+    private final Context context;
+    private final ArrayList<MainBean> arrAdapter;
     private MainListItemBinding binding;
     private MainBean mainBean;
     private ArrayList<Integer> arrRv;
-    private String strParamId, strQuestion;
+    private final String strParamId = "(" + RV_ID + ")";
+    private final String strQuestion = "(?)";
     private Object[] arrObjParamId;
     private int intParamId;
-    private Cursor cursor;
     private Runnable runnable;
-    private Handler handler;
 
     public RvAdapter(Activity activity, ArrayList<MainBean> arrAdapter, Context context) {
 
@@ -65,11 +59,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
         dbManager = new DBManager();
 
-        function = new Function();
-
         arrRv = new ArrayList<>();
-
-        handler = new Handler();
 
         return new ItemViewHolder(binding);
 
@@ -78,58 +68,69 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
+        AddBindViewHolder addBindViewHolder = new AddBindViewHolder();
+        addBindViewHolder.setBindViewHolder(holder,position);
 
-                mainBean = arrAdapter.get(position);
+    }
 
-                holder.bindItem(mainBean);
-                holder.mainListItemBinding.llContent.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
-                holder.mainListItemBinding.lldelete.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
-                holder.mainListItemBinding.tvDelete.setText("刪除");
-                holder.mainListItemBinding.llContent.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+    public class AddBindViewHolder{
 
-                        function.setToast(activity, context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT);
+        public void setBindViewHolder(ItemViewHolder holder, int position){
 
-                    }
-                });
+            runnable = new Runnable() {
+                @Override
+                public void run() {
 
-                holder.mainListItemBinding.llContent.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
+                    mainBean = arrAdapter.get(position);
 
-                        function.setToast(activity, context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT);
+                    holder.bindItem(mainBean);
+                    holder.mainListItemBinding.llContent.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
+                    holder.mainListItemBinding.lldelete.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
+                    holder.mainListItemBinding.tvDelete.setText("刪除");
+                    holder.mainListItemBinding.llContent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        return false;
-                    }
-                });
+                            setToast(activity, context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT);
 
-                holder.mainListItemBinding.cardMenu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+                        }
+                    });
 
-                        deleteItem(position);
+                    holder.mainListItemBinding.llContent.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
 
-                    }
-                });
+                            setToast(activity, context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT);
 
-                holder.mainListItemBinding.cardMenu.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
+                            return false;
+                        }
+                    });
 
-                        deleteItem(position);
+                    holder.mainListItemBinding.cardMenu.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
-                        return false;
-                    }
-                });
+                            deleteItem(position);
 
-            }
-        };
+                        }
+                    });
 
-        activity.runOnUiThread(runnable);
+                    holder.mainListItemBinding.cardMenu.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+
+                            deleteItem(position);
+
+                            return false;
+                        }
+                    });
+
+                }
+            };
+
+            activity.runOnUiThread(runnable);
+
+        }
 
     }
 
@@ -139,25 +140,12 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
     }
 
     @Override
-    public Cursor addCursor(Cursor adapterCursor) { cursor = adapterCursor;return cursor; }
-
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
-
-        private MainListItemBinding mainListItemBinding;
-
-        public ItemViewHolder(MainListItemBinding mainListItemBinding) {
-            super(mainListItemBinding.getRoot());
-            this.mainListItemBinding = mainListItemBinding;
-        }
-
-        public void bindItem(Object obj) {
-            mainListItemBinding.setVariable(BR.item, obj);
-            mainListItemBinding.executePendingBindings();
-        }
-
-    }
+    public Cursor addCursor(Cursor adapterCursor) {
+        return adapterCursor; }
 
     public void deleteItem(int position) {  // position屬於遞減性質,傳值取Data ID
+
+        android.os.Handler handler = new Handler();
 
         runnable = new Runnable() {
             @Override
@@ -165,12 +153,10 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
                 if (arrAdapter.size() == 1) {
 
-                    function.setToast(activity, context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_SHORT);
+                    setToast(activity, context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_SHORT);
 
                 } else {
 
-                    strParamId = "(" + RV_ID + ")";
-                    strQuestion = "(?)";
                     intParamId = arrAdapter.get(position).getId();
                     arrObjParamId = new Object[]{intParamId};
                     dbManager.insertSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
@@ -183,7 +169,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
             }
         };
 
-        handler.post(runnable);
+        new Thread(runnable).start();
 
     }
 
@@ -191,7 +177,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
         if (arrAdapter.size() == arrActivitySize) { // 判斷adapter和activity裡的值
 
-            function.setToast(activity, context, " 已顯示最多資料, 謝謝 ", Toast.LENGTH_SHORT);
+            setToast(activity, context, " 已顯示最多資料, 謝謝 ", Toast.LENGTH_SHORT);
 
         } else if (arrAdapter.size() < arrActivitySize) {
 

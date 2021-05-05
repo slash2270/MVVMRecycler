@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.mvvmrecycler.tools.Constant;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class DBHelper extends SQLiteOpenHelper{
@@ -18,10 +17,6 @@ public class DBHelper extends SQLiteOpenHelper{
 
     public DBHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version, @Nullable DatabaseErrorHandler errorHandler) {
         super(context, name, factory, version, errorHandler);
-    }
-
-    public DBHelper(@Nullable Context context, @Nullable String name, int version, @NonNull SQLiteDatabase.OpenParams openParams) {
-        super(context, name, version, openParams);
     }
 
     @Override

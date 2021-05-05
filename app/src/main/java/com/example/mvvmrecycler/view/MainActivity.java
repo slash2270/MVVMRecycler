@@ -8,32 +8,23 @@ import android.os.Bundle;
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
-import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MainActivityBinding binding;
-
-    private MainViewModel model;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = DataBindingUtil.setContentView(this, R.layout.main_activity);
+        com.example.mvvmrecycler.databinding.MainActivityBinding binding = DataBindingUtil.setContentView(this, R.layout.main_activity);
 
-        model = new MainViewModel();
+        MainViewModel model = new MainViewModel();
 
         model.initView(this);
-
-        model.setTitleBtn(this);
-
+        model.setTitleBtn();
         model.setRv(binding);
-
         model.getData(binding, this);
-
         model.setBtnClick(binding, this);
 
         binding.setModel(model);

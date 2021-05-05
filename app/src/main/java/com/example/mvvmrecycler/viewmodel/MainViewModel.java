@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import android.os.Handler;
 import android.view.View;
 
 import com.example.mvvmrecycler.data.DBManager;
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
+import static com.example.mvvmrecycler.tools.Function.arrMainCompare;
 
 public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize{
 
@@ -32,19 +34,12 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     private DBManager dbManager;
 
-    private SQLiteDatabase db;
-
     private DataModel dataModel;
-
-    private Runnable runIncrease, runRefresh;
-
-    private Function function;
 
     private ArrayList<MainBean> arrView; //和arrAdapter屬於同步性質
     private RvAdapter adapter;
     public String strTitle, strUrl, strRefresh, strIncrease;
     private int arrViewSize;
-
 
     public void initView(Activity activity){
 
@@ -57,17 +52,15 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
         isLoading = new ObservableBoolean(false);
 
-        function = new Function();
-
         arrView = new ArrayList<>();
 
     }
 
-    public void setTitleBtn(Activity activity){
+    public void setTitleBtn(){
 
         isLoading.set(true);
 
-        dataModel.setTextTitleBtn(activity, new DataModel.SetTextTitleBtn() {
+        dataModel.setTextTitleBtn(new DataModel.SetTextTitleBtn() {
             @Override
             public void number(String number) {
 
@@ -119,9 +112,13 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public void getData(MainActivityBinding binding, Activity activity){
 
-        arrView.clear();
+        if(arrView.size() > 0){
 
-        dataModel.getData(this, binding, activity, context, arrView);
+           arrView = new ArrayList<>();
+
+        }
+
+        dataModel.setData(this, binding, activity, context, arrView);
 
     }
 
@@ -140,9 +137,9 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public void setBtnClick(MainActivityBinding binding, Activity activity){
 
-        runIncrease = (new Runnable() {
+        Runnable runIncrease = (new Runnable() {
             @Override
-            public void run(){
+            public void run() {
 
                 binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -150,7 +147,11 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
                         adapter.addItem(arrViewSize);
 
-                        function.arrMainCompare(arrView);
+                        arrMainCompare(arrView);
+
+                        for (MainBean f: arrView) {
+                            System.out.println(f.getId());
+                        }
 
                     }
                 });
@@ -161,7 +162,7 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
                         adapter.addItem(arrViewSize);
 
-                        function.arrMainCompare(arrView);
+                        arrMainCompare(arrView);
 
                         return false;
                     }
@@ -170,7 +171,7 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
             }
         });
 
-        runRefresh = (new Runnable() {
+        Runnable runRefresh = (new Runnable() {
             @Override
             public void run() {
 
@@ -205,4 +206,3 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     }
 
 }
-

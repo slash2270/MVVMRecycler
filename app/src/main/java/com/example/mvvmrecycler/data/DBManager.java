@@ -31,10 +31,11 @@ public class DBManager{
     private DBHelper helper;
     private SQLiteDatabase db;
     private ContentValues cv;
-    private String sql, number, title, url, color, dbColumns, dbColumnClause;
+    private String sql;
+    private String dbColumnClause;
     private int id;
     private Cursor cursor;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private Runnable runnable;
 
     /**
@@ -56,7 +57,7 @@ public class DBManager{
     /**
      * 設置DB路徑
      */
-    
+
 /*
     public void openDB(Context context, String DBHath) {
         String path = context.getDatabasePath(DBHath).getPath();
@@ -205,7 +206,7 @@ public class DBManager{
 
     public void inAndroid(Context context, String tableName, String columns, String[] paramArgs){
 
-        dbColumns = columns;
+        String dbColumns = columns;
 
         getHelper(context);
         db = helper.getReadableDatabase();
@@ -234,10 +235,10 @@ public class DBManager{
             for (int i = 0; i < cursor.getCount(); i++) {
 
                 id = cursor.getInt(cursor.getColumnIndex(MAIN_ID));
-                number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
-                title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
-                url = cursor.getString(cursor.getColumnIndex(MAIN_URL));
-                color = cursor.getString(cursor.getColumnIndex(MAIN_COLOR));
+                String number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
+                String title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
+                String url = cursor.getString(cursor.getColumnIndex(MAIN_URL));
+                String color = cursor.getString(cursor.getColumnIndex(MAIN_COLOR));
 
                 arrayList.add(new MainBean(id, number, title, url, color));
 
