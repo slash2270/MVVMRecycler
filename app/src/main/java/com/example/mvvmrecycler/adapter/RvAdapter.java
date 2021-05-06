@@ -145,8 +145,6 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
     public void deleteItem(int position) {  // position屬於遞減性質,傳值取Data ID
 
-        android.os.Handler handler = new Handler();
-
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -167,6 +165,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
                 }
 
             }
+
         };
 
         new Thread(runnable).start();
@@ -184,22 +183,18 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
             dbManager.selectSQLite(context, TABLE_NAME_RV);
             dbManager.cursorRvList(arrRv);
 
-            for (intParamId = 0; intParamId < arrRv.size(); intParamId++) {
+            intParamId = arrRv.get(0);
 
-                intParamId = arrRv.get(intParamId);
+            dbManager.inSQLite(context, TABLE_NAME_MAIN, MAIN_ID, intParamId);
+            dbManager.cursorMainList(arrAdapter);
 
-                dbManager.inSQLite(context, TABLE_NAME_MAIN, MAIN_ID, intParamId);
-                dbManager.cursorMainList(arrAdapter);
-
-                mainBean = arrAdapter.get(getItemCount() - 1); // ItemCount比arrSize更不容易報錯
-                binding.setVariable(BR.item, mainBean);
-                binding.executePendingBindings();
-                notifyItemInserted(intParamId - 1); //adapter插入position位置
-                arrObjParamId = new Object[]{intParamId};
-                dbManager.deleteSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
-                notifyDataSetChanged();
-
-            }
+            mainBean = arrAdapter.get(getItemCount() - 1); // ItemCount比arrSize更不容易報錯
+            binding.setVariable(BR.item, mainBean);
+            binding.executePendingBindings();
+            notifyItemInserted(intParamId - 1); //adapter插入position位置
+            arrObjParamId = new Object[]{intParamId};
+            dbManager.deleteSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
+            notifyDataSetChanged();
 
         }
 
