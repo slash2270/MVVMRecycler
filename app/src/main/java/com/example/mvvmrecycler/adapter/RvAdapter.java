@@ -2,9 +2,7 @@ package com.example.mvvmrecycler.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +12,7 @@ import com.example.mvvmrecycler.BR;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.R;
+import com.example.mvvmrecycler.data.RvBean;
 import com.example.mvvmrecycler.databinding.MainListItemBinding;
 
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
 import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
 import static com.example.mvvmrecycler.tools.Function.setToast;
 
-public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements DBManager.addCursor {
+public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
     private DBManager dbManager;
     private final Activity activity;
@@ -36,12 +35,11 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
     private final ArrayList<MainBean> arrAdapter;
     private MainListItemBinding binding;
     private MainBean mainBean;
-    private ArrayList<Integer> arrRv;
-    private final String strParamId = "(" + RV_ID + ")";
-    private final String strQuestion = "(?)";
+    private ArrayList<RvBean> arrRv;
+    private String strParamId;
+    private String strQuestion;
     private Object[] arrObjParamId;
     private int intParamId;
-    private Runnable runnable;
 
     public RvAdapter(Activity activity, ArrayList<MainBean> arrAdapter, Context context) {
 
@@ -57,11 +55,21 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
 
         binding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.main_list_item, parent, false);
 
+        initAdapter();
+
+        return new ItemViewHolder(binding);
+
+    }
+
+    private void initAdapter(){
+
         dbManager = new DBManager();
 
         arrRv = new ArrayList<>();
 
-        return new ItemViewHolder(binding);
+        strParamId = "(" + RV_ID + ")";
+
+        strQuestion = "(?)";
 
     }
 
@@ -69,17 +77,20 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
 
         AddBindViewHolder addBindViewHolder = new AddBindViewHolder();
-        addBindViewHolder.setBindViewHolder(holder,position);
+        addBindViewHolder.setBindViewHolder(holder, activity, context, arrAdapter, position, intParamId, arrObjParamId, dbManager, strParamId, strQuestion, this);
 
     }
 
     public class AddBindViewHolder{
 
-        public void setBindViewHolder(ItemViewHolder holder, int position){
+        public void setBindViewHolder(ItemViewHolder holder, Activity activity, Context context, ArrayList<MainBean> arrAdapter, int position, int intParamId,
+                                      Object[] arrObjParamId, DBManager dbManager, String strParamId, String strQuestion, RvAdapter rvAdapter){
 
-            runnable = new Runnable() {
+            Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
+
+                    SetDeleteItem addDeleteItem = new SetDeleteItem();
 
                     mainBean = arrAdapter.get(position);
 
@@ -110,7 +121,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
                         @Override
                         public void onClick(View v) {
 
-                            deleteItem(position);
+                            addDeleteItem.deleteItem(activity, context, arrAdapter, position, intParamId, arrObjParamId, dbManager, strParamId, strQuestion, rvAdapter);
 
                         }
                     });
@@ -119,7 +130,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
                         @Override
                         public boolean onLongClick(View v) {
 
-                            deleteItem(position);
+                            addDeleteItem.deleteItem(activity, context, arrAdapter, position, intParamId, arrObjParamId, dbManager, strParamId, strQuestion, rvAdapter);
 
                             return false;
                         }
@@ -139,39 +150,6 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
         return arrAdapter == null ? 0 : arrAdapter.size();
     }
 
-    @Override
-    public Cursor addCursor(Cursor adapterCursor) {
-        return adapterCursor; }
-
-    public void deleteItem(int position) {  // position屬於遞減性質,傳值取Data ID
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                if (arrAdapter.size() == 1) {
-
-                    setToast(activity, context, " 最少顯示一筆資料, 謝謝 ", Toast.LENGTH_SHORT);
-
-                } else {
-
-                    intParamId = arrAdapter.get(position).getId();
-                    arrObjParamId = new Object[]{intParamId};
-                    dbManager.insertSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
-                    arrAdapter.remove(position);
-                    notifyItemRemoved(position);
-                    notifyDataSetChanged();
-
-                }
-
-            }
-
-        };
-
-        new Thread(runnable).start();
-
-    }
-
     public void addItem(int arrActivitySize) {
 
         if (arrAdapter.size() == arrActivitySize) { // 判斷adapter和activity裡的值
@@ -183,7 +161,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder> implements 
             dbManager.selectSQLite(context, TABLE_NAME_RV);
             dbManager.cursorRvList(arrRv);
 
-            intParamId = arrRv.get(0);
+            intParamId = arrRv.get(0).getPosition();
 
             dbManager.inSQLite(context, TABLE_NAME_MAIN, MAIN_ID, intParamId);
             dbManager.cursorMainList(arrAdapter);

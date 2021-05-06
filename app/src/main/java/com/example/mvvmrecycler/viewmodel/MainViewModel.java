@@ -2,9 +2,7 @@ package com.example.mvvmrecycler.viewmodel;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 
-import android.os.Handler;
 import android.view.View;
 
 import com.example.mvvmrecycler.data.DBManager;
@@ -12,7 +10,6 @@ import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
-import com.example.mvvmrecycler.tools.Function;
 
 import java.util.ArrayList;
 
@@ -148,10 +145,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
                         adapter.addItem(arrViewSize);
 
                         arrMainCompare(arrView);
-
-                        for (MainBean f: arrView) {
-                            System.out.println(f.getId());
-                        }
 
                     }
                 });

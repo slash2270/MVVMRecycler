@@ -2,8 +2,6 @@ package com.example.mvvmrecycler.datamodel;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -68,7 +66,7 @@ public class DataModel{
                 number = jsonObjContent.get("id").toString().trim();
                 title = jsonObjContent.get("title").toString().trim();
                 url = jsonObjContent.get("thumbnailUrl").toString().trim();
-                color = getBackgroundColor(color, url);
+                color = getBackgroundColor(url);
                 url = getUrl(url);
                 id = Integer.parseInt(number);
 
@@ -86,7 +84,6 @@ public class DataModel{
                e.printStackTrace();
 
               }
-
 
               rvAdapter = AddAdapter.setAdapter(activity, context, binding, arrView);
 
@@ -125,6 +122,7 @@ public class DataModel{
   }
 
  }
+
 
  public interface GetAdapterSize{ // binding兩個model的值
 

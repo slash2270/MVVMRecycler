@@ -31,7 +31,7 @@ public class Function {
 
     public static void arrMainCompare(ArrayList<MainBean>arrayList){
 
-        Collections.sort(arrayList, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於 重新排序adapter裡的position
+        Collections.sort(arrayList, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於
             @Override
             public int compare(MainBean o1, MainBean o2) {
                 int i = o1.getId() - o2.getId();
@@ -61,9 +61,9 @@ public class Function {
 
     }
 
-     public static String getBackgroundColor(String color, String url){
+     public static String getBackgroundColor(String url){
 
-             color = "#"+url.replace("https://via.placeholder.com/150/", "").trim();
+             String color = "#"+url.replace("https://via.placeholder.com/150/", "").trim();
 
              if (color.length() == 6) { //顏色補字元
 
@@ -96,17 +96,21 @@ public class Function {
 
      }
 
-    public void fabHide(FloatingActionButton fab) {
+    public FloatingActionButton fabHide(FloatingActionButton fab) {
 
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) fab.getLayoutParams();
 
         fab.animate().translationY(fab.getHeight()+layoutParams.bottomMargin).setInterpolator(new AccelerateInterpolator(3));
 
+        return fab;
+
     }
 
-    public void fabShow(FloatingActionButton fab) {
+    public FloatingActionButton fabShow(FloatingActionButton fab) {
 
         fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(3));
+
+        return fab;
 
     }
 

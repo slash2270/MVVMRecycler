@@ -252,7 +252,7 @@ public class DBManager{
 
     }
 
-    public ArrayList<Integer> cursorRvList(ArrayList<Integer> arrayList){
+    public ArrayList<RvBean> cursorRvList(ArrayList<RvBean> arrayList){
 
         if (cursor.moveToFirst()) {
 
@@ -262,7 +262,7 @@ public class DBManager{
 
                 cursor.moveToNext();
 
-                arrayList.add(id);
+                arrayList.add(new RvBean(id));
 
             }
 
@@ -271,12 +271,6 @@ public class DBManager{
         cursor.close();
 
         return arrayList ;
-
-    }
-
-    public interface addCursor{
-
-        Cursor addCursor(Cursor adapterCursor);
 
     }
 
