@@ -3,8 +3,6 @@ package com.example.mvvmrecycler.viewmodel;
 import android.app.Activity;
 import android.content.Context;
 
-import android.view.View;
-
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
@@ -27,8 +25,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public ObservableBoolean isLoading;
 
-    private Context context;
-
     private DBManager dbManager;
 
     private DataModel dataModel;
@@ -38,9 +34,7 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     public String strTitle, strUrl, strRefresh, strIncrease;
     private int arrViewSize;
 
-    public void initView(Activity activity){
-
-        context = activity.getApplicationContext();
+    public void initView(){
 
         dataModel = new DataModel();
         dbManager = new DBManager();
@@ -75,29 +69,23 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
             }
 
             @Override
-            public String url(String url) {
+            public void url(String url) {
 
                 strUrl = url;
 
-                return strUrl;
-
             }
 
             @Override
-            public String increase(String increase) {
+            public void increase(String increase) {
 
                 strIncrease = increase;
 
-                return strIncrease;
-
             }
 
             @Override
-            public String refresh(String refresh) {
+            public void refresh(String refresh) {
 
                 strRefresh = refresh;
-
-                return strRefresh;
 
             }
 
@@ -107,7 +95,7 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     }
 
-    public void getData(MainActivityBinding binding, Activity activity){
+    public void getData(MainActivityBinding binding, Activity activity, Context context){
 
         if(arrView.size() > 0){
 
@@ -127,70 +115,54 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     }
 
     @Override
-    public RvAdapter addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter;return adapter; }
+    public void addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter;
+    }
 
     @Override
-    public int addArrSize(int arrSize) { arrViewSize = arrSize;return arrViewSize; }
+    public void addArrSize(int arrSize) { arrViewSize = arrSize;
+    }
 
-    public void setBtnClick(MainActivityBinding binding, Activity activity){
+    public void setBtnClick(MainActivityBinding binding, Activity activity, Context context){
 
-        Runnable runIncrease = (new Runnable() {
-            @Override
-            public void run() {
+        Runnable runIncrease = (() -> {
 
-                binding.btnIncrease.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            binding.btnIncrease.setOnClickListener(v -> {
 
-                        adapter.addItem(arrViewSize);
+                adapter.addItem(arrViewSize);
 
-                        arrMainCompare(arrView);
+                arrMainCompare(arrView);
 
-                    }
-                });
+            });
 
-                binding.btnIncrease.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
+            binding.btnIncrease.setOnLongClickListener(v -> {
 
-                        adapter.addItem(arrViewSize);
+                adapter.addItem(arrViewSize);
 
-                        arrMainCompare(arrView);
+                arrMainCompare(arrView);
 
-                        return false;
-                    }
-                });
+                return false;
+            });
 
-            }
         });
 
-        Runnable runRefresh = (new Runnable() {
-            @Override
-            public void run() {
+        Runnable runRefresh = (() -> {
 
-                binding.btnRefresh.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
+            binding.btnRefresh.setOnClickListener(v -> {
 
-                        dbManager.deleteDb(context, DATABASE_NAME);
-                        getData(binding, activity);
+                dbManager.deleteDb(context, DATABASE_NAME);
+                getData(binding, activity, context);
 
-                    }
-                });
+            });
 
-                binding.btnRefresh.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
+            binding.btnRefresh.setOnLongClickListener(v -> {
 
-                        dbManager.deleteDb(context, DATABASE_NAME);
-                        getData(binding, activity);
+                dbManager.deleteDb(context, DATABASE_NAME);
+                getData(binding, activity, context);
 
-                        return false;
+                return false;
 
-                    }
-                });
+            });
 
-            }
         });
 
         new Thread(runIncrease).start();

@@ -1,33 +1,15 @@
 package com.example.mvvmrecycler.tools;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Looper;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.mvvmrecycler.data.MainBean;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public class Function {
-
-    public boolean isMainLooper() {
-
-        return  Looper.getMainLooper() == Looper.myLooper();
-
-    }
-
-    public boolean isMainThread() {
-
-        return  Looper.getMainLooper().getThread() == Thread.currentThread();
-
-    }
 
     public static void arrMainCompare(ArrayList<MainBean>arrayList){
 
@@ -48,16 +30,9 @@ public class Function {
 
     }
 
-    public static void setToast(Activity activity, Context context, String text, int duration){
+    public static void setToast(Context context, String text, int duration) {
 
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                Toast.makeText(context, text, duration).show();
-
-            }
-        });
+        Toast.makeText(context, text, duration).show();
 
     }
 
@@ -95,6 +70,18 @@ public class Function {
          return url;
 
      }
+/*
+    public boolean isMainLooper() {
+
+        return  Looper.getMainLooper() == Looper.myLooper();
+
+    }
+
+    public boolean isMainThread() {
+
+        return  Looper.getMainLooper().getThread() == Thread.currentThread();
+
+    }
 
     public FloatingActionButton fabHide(FloatingActionButton fab) {
 
@@ -112,6 +99,6 @@ public class Function {
 
         return fab;
 
-    }
+    }  */
 
 }

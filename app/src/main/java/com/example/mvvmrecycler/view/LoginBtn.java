@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 
 import com.example.mvvmrecycler.R;
@@ -20,14 +19,11 @@ public class LoginBtn {
         btnLogin.setTextSize(20);
         btnLogin.setTextColor(Color.parseColor("#B4B4B4"));
         btnLogin.getPaint().setFakeBoldText(true);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnLogin.setOnClickListener(v -> {
 
-                Intent intent = new Intent(activity, MainActivity.class);
-                activity.startActivity(intent);
+            Intent intent = new Intent(activity, MainActivity.class);
+            activity.startActivity(intent);
 
-            }
         });
 
     }

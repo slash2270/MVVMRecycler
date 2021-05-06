@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 
-import com.example.mvvmrecycler.tools.Constant;
-
 import java.util.ArrayList;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
@@ -30,19 +28,18 @@ public class DBManager{
 
     private DBHelper helper;
     private SQLiteDatabase db;
-    private ContentValues cv;
     private String sql;
-    private String dbColumnClause;
     private int id;
     private Cursor cursor;
     private final Handler handler = new Handler();
     private Runnable runnable;
+    // private String dbColumnClause;
 
     /**
      * 取得SQLHelper
      */
 
-    public DBHelper getHelper(Context context){
+    public void getHelper(Context context){
 
         handler.removeCallbacks(runnable);
 
@@ -50,15 +47,9 @@ public class DBManager{
             helper = new DBHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 
-        return helper;
-
     }
 
-    /**
-     * 設置DB路徑
-     */
-
-/*
+    /*
     public void openDB(Context context, String DBHath) {
         String path = context.getDatabasePath(DBHath).getPath();
         sqLiteDatabase = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READWRITE);
@@ -70,14 +61,7 @@ public class DBManager{
 
     public void deleteDb(Context context, String dbname) {
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                context.deleteDatabase(dbname);
-
-            }
-        };
+        runnable = () -> context.deleteDatabase(dbname);
 
         handler.post(runnable);
 
@@ -87,44 +71,18 @@ public class DBManager{
      * 新增Data
      */
 
-    public void insertAndroid(Context context, String tableName, ContentValues cv, String key, String value){
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                handler.post(runnable);
-
-                getHelper(context);
-                db = helper.getWritableDatabase();
-
-                cv.put(key, value);
-
-                db.insert(tableName, null, cv);
-                db.close();
-
-            }
-        };
-
-        handler.post(runnable);
-
-    }
-
     public void insertSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
+        runnable = () -> {
 
-                getHelper(context);
-                db = helper.getWritableDatabase();
+            getHelper(context);
+            db = helper.getWritableDatabase();
 
-                sql = "insert into " + tableName + " " + columns + " values " + questions;
+            sql = "insert into " + tableName + " " + columns + " values " + questions;
 
-                db.execSQL(sql, paramArgs);
-                db.close();
+            db.execSQL(sql, paramArgs);
+            db.close();
 
-            }
         };
 
         handler.post(runnable);
@@ -135,44 +93,18 @@ public class DBManager{
      * 刪除資料
      */
 
-    public void deleteAndroid(Context context, String tableName, String columnClause, String[] paramArgs){
-
-        dbColumnClause = columnClause;
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-
-                getHelper(context);
-                db = helper.getWritableDatabase();
-
-                dbColumnClause = dbColumnClause + " = ?";
-
-                db.delete(tableName, dbColumnClause, paramArgs);
-                db.close();
-
-            }
-        };
-
-        handler.post(runnable);
-
-    }
-
     public void deleteSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
+        runnable = () -> {
 
-                getHelper(context);
-                db = helper.getWritableDatabase();
+            getHelper(context);
+            db = helper.getWritableDatabase();
 
-                sql = "delete from " + tableName + " where " + columns + " = " + questions;
+            sql = "delete from " + tableName + " where " + columns + " = " + questions;
 
-                db.execSQL(sql,paramArgs);
-                db.close();
+            db.execSQL(sql,paramArgs);
+            db.close();
 
-            }
         };
 
         handler.post(runnable);
@@ -182,14 +114,6 @@ public class DBManager{
     /**
      * 搜尋Table
      */
-
-    public void selectAndroid(Context context, String tableName){
-
-        getHelper(context);
-        db = helper.getReadableDatabase();
-        cursor = db.query(tableName, null, null, null, null, null, null);
-
-    }
 
     public void selectSQLite(Context context, String tableName){
 
@@ -204,17 +128,6 @@ public class DBManager{
      * 搜尋 IN
      */
 
-    public void inAndroid(Context context, String tableName, String columns, String[] paramArgs){
-
-        String dbColumns = columns;
-
-        getHelper(context);
-        db = helper.getReadableDatabase();
-        dbColumns = dbColumns + " = ?";
-        cursor = db.query(tableName, null, dbColumns, paramArgs, null, null, null);
-
-    }
-
     public void inSQLite(Context context, String tableName, String columns, Object params){
 
         getHelper(context);
@@ -228,7 +141,7 @@ public class DBManager{
      * Cursor轉ArrayList
      */
 
-    public void cursorMainList(ArrayList<MainBean> arrayList){
+    public ArrayList<MainBean> cursorMainList(ArrayList<MainBean> arrayList){
 
         if (cursor.moveToFirst()) {
 
@@ -250,9 +163,13 @@ public class DBManager{
 
         cursor.close(); // 先開後關
 
+        return arrayList;
+
     }
 
-    public ArrayList<RvBean> cursorRvList(ArrayList<RvBean> arrayList){
+    public ArrayList<RvBean> cursorRvList(){
+
+        ArrayList<RvBean> arrayList = new ArrayList<>();
 
         if (cursor.moveToFirst()) {
 
@@ -273,5 +190,68 @@ public class DBManager{
         return arrayList ;
 
     }
+
+    /*
+
+        public void insertAndroid(Context context, String tableName, ContentValues cv, String key, String value){
+
+        runnable = () -> {
+
+            handler.post(runnable);
+
+            getHelper(context);
+            db = helper.getWritableDatabase();
+
+            cv.put(key, value);
+
+            db.insert(tableName, null, cv);
+            db.close();
+
+        };
+
+        handler.post(runnable);
+
+    }
+
+        public void selectAndroid(Context context, String tableName){
+
+        getHelper(context);
+        db = helper.getReadableDatabase();
+        cursor = db.query(tableName, null, null, null, null, null, null);
+
+    }
+
+    public void deleteAndroid(Context context, String tableName, String columnClause, String[] paramArgs){
+
+        dbColumnClause = columnClause;
+
+        runnable = () -> {
+
+            getHelper(context);
+            db = helper.getWritableDatabase();
+
+            dbColumnClause = dbColumnClause + " = ?";
+
+            db.delete(tableName, dbColumnClause, paramArgs);
+            db.close();
+
+        };
+
+        handler.post(runnable);
+
+    }
+
+    public void inAndroid(Context context, String tableName, String columns, String[] paramArgs){
+
+        String dbColumns = columns;
+
+        getHelper(context);
+        db = helper.getReadableDatabase();
+        dbColumns = dbColumns + " = ?";
+        cursor = db.query(tableName, null, dbColumns, paramArgs, null, null, null);
+
+    }
+
+     */
 
 }

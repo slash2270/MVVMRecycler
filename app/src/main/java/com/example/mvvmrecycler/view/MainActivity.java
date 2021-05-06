@@ -21,11 +21,11 @@ public class MainActivity extends AppCompatActivity {
 
         MainViewModel model = new MainViewModel();
 
-        model.initView(this);
+        model.initView();
         model.setTitleBtn();
         model.setRv(binding);
-        model.getData(binding, this);
-        model.setBtnClick(binding, this);
+        model.getData(binding, this, getApplicationContext());
+        model.setBtnClick(binding, this, getApplicationContext());
 
         binding.setModel(model);
 

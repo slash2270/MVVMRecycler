@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Objects;
+
 public class SlideRecyclerView  extends RecyclerView {
 
     private static final int INVALID_POSITION = -1; // 触摸到的点不在子View范围内
@@ -21,9 +23,9 @@ public class SlideRecyclerView  extends RecyclerView {
     private static final int SNAP_VELOCITY = 600;   // 最小滑动速度
 
     private VelocityTracker mVelocityTracker;   // 速度追踪器
-    private int mTouchSlop; // 认为是滑动的最小距离（一般由系统提供）
+    private final int mTouchSlop; // 认为是滑动的最小距离（一般由系统提供）
     private Rect mTouchFrame;   // 子View所在的矩形范围
-    private Scroller mScroller;
+    private final Scroller mScroller;
     private float mLastX;   // 滑动过程中记录上次触碰点X
     private float mFirstX, mFirstY; // 首次触碰范围
     private boolean mIsSlide;   // 是否滑动子View
@@ -61,7 +63,7 @@ public class SlideRecyclerView  extends RecyclerView {
                 if (mPosition != INVALID_POSITION) {
                     View view = mFlingView;
                     // 获取触碰点所在的view
-                    mFlingView = (ViewGroup) getChildAt(mPosition - ((LinearLayoutManager) getLayoutManager()).findFirstVisibleItemPosition());
+                    mFlingView = (ViewGroup) getChildAt(mPosition - ((LinearLayoutManager) Objects.requireNonNull(getLayoutManager())).findFirstVisibleItemPosition());
                     // 这里判断一下如果之前触碰的view已经打开，而当前碰到的view不是那个view则立即关闭之前的view，此处并不需要担动画没完成冲突，因为之前已经abortAnimation
                     if (view != null && mFlingView != view && view.getScrollX() != 0) {
                         view.scrollTo(0, 0);
