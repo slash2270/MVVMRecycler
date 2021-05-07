@@ -3,15 +3,7 @@ package com.example.mvvmrecycler.datamodel;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-
 import com.example.mvvmrecycler.adapter.RvAdapter;
-import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
@@ -19,32 +11,97 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
-import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_NUMBER;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_TITLE;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_URL;
-import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
 import static com.example.mvvmrecycler.tools.Function.getBackgroundColor;
 import static com.example.mvvmrecycler.tools.Function.getUrl;
-import static com.example.mvvmrecycler.tools.Function.setToast;
+import static com.example.mvvmrecycler.tools.Function.httpConnectionGet;
 
-public class DataModel{
+public class DynamicDataModel extends AsyncTask<String, Void, String> {
 
-    private String number, title, url, color;
-    private int id, i;
+    private final Context context;
+    private final GetAdapterSize getAdapterSize;
+    private final MainActivityBinding binding;
+    private final Activity activity;
+    private final ArrayList<MainBean> arrView;
 
-    private RvAdapter rvAdapter;
+    public DynamicDataModel(Context context, GetAdapterSize getAdapterSize, MainActivityBinding binding, Activity activity, ArrayList<MainBean> arrView) {
+        this.context = context;
+        this.getAdapterSize = getAdapterSize;
+        this.binding = binding;
+        this.activity = activity;
+        this.arrView = arrView;
+    }
 
-    public void setData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Activity activity, Context context, ArrayList<MainBean> arrView) {
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        // progressdialog
+    }
+
+    @Override
+    protected String doInBackground(String... strings) {
+        String apiUrl = "https://jsonplaceholder.typicode.com/photos";
+        return httpConnectionGet(context, apiUrl);
+    }
+
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        setData(s);
+
+    }
+
+    public void setData(String result) {
+
+        try {
+
+            JSONArray jsArrResponse = new JSONArray(result);
+
+            int i;
+            for (i = 0; i < 1000; i++) { // 資料長度可自由更改,最多5000筆
+
+                JSONObject jsonObjContent = jsArrResponse.getJSONObject(i);
+
+                String number = jsonObjContent.get("id").toString().trim();
+                String title = jsonObjContent.get("title").toString().trim();
+                String url = jsonObjContent.get("thumbnailUrl").toString().trim();
+                String color = getBackgroundColor(url);
+                url = getUrl(url);
+                int id = Integer.parseInt(number);
+
+                arrView.add(new MainBean(id, number, title, url, color));
+
+                SetDbData.addDbData(context, id, number, title, url, color);
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+            System.out.println(e.toString().trim());
+
+        }
+
+        AddAdapter addAdapter = new AddAdapter();
+        RvAdapter rvAdapter = addAdapter.setAdapter(activity, context, binding, arrView);
+
+        getAdapterSize.addArrSize(arrView.size());
+        getAdapterSize.addRvAdapter(rvAdapter);
+
+    }
+
+    public interface GetAdapterSize { // binding兩個model的值
+
+        void addRvAdapter(RvAdapter rvAdapter);
+
+        void addArrSize(int arrSize);
+
+    }
+
+    /*
+    public void setData(GetAdapterSize getAdapterSize, MainActivityBinding binding, Activity activity, Context context, ArrayList<MainBean> arrView) { // Volley
 
         DBManager dbManager = new DBManager();
 
@@ -96,53 +153,6 @@ public class DataModel{
 
         requestQueue.add(jsonArrayRequest);
 
-    }
-
-    public static class AddAdapter {
-
-        public static RvAdapter setAdapter(Activity activity, Context context, MainActivityBinding binding, ArrayList<MainBean> arrView) {
-
-            RvAdapter rvAdapter = new RvAdapter(activity, arrView, context);
-            binding.rv.setAdapter(rvAdapter);
-            rvAdapter.notifyDataSetChanged();
-
-            return rvAdapter;
-
-        }
-
-    }
-
-
-    public interface GetAdapterSize { // binding兩個model的值
-
-        void addRvAdapter(RvAdapter rvAdapter);
-
-        void addArrSize(int arrSize);
-
-    }
-
-    public void setTextTitleBtn(SetTextTitleBtn setTextTitleBtn) {
-
-        setTextTitleBtn.number("Number");
-        setTextTitleBtn.title("Title");
-        setTextTitleBtn.url("Url");
-        setTextTitleBtn.increase("增加");
-        setTextTitleBtn.refresh("刷新");
-
-    }
-
-    public interface SetTextTitleBtn {
-
-        void number(String number);
-
-        String title(String title);
-
-        void url(String url);
-
-        void increase(String increase);
-
-        void refresh(String refresh);
-
-    }
+    }*/
 
 }

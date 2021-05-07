@@ -5,11 +5,49 @@ import android.widget.Toast;
 
 import com.example.mvvmrecycler.data.MainBean;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public class Function {
+
+    public static String httpConnectionGet(Context context, String apiUrl) {
+
+        StringBuilder result = new StringBuilder();
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(apiUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.setConnectTimeout(10000);
+            urlConnection.setReadTimeout(10000);
+
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+
+        }catch( Exception e) {
+            e.printStackTrace();
+            setToast(context, " 載入資料錯誤, 請檢查網路或聯絡資訊相關人員, 謝謝 ", Toast.LENGTH_SHORT);
+        }
+        finally {
+            assert urlConnection != null;
+            urlConnection.disconnect();
+        }
+
+        return result.toString();
+    }
 
     public static void arrMainCompare(ArrayList<MainBean>arrayList){
 

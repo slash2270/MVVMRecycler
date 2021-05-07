@@ -79,7 +79,6 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
         public void setBindViewHolder(ItemViewHolder holder, Activity activity, Context context, ArrayList<MainBean> arrAdapter, int position, DBManager dbManager, String strParamId, String strQuestion, RvAdapter rvAdapter){
 
-
                 SetDeleteItem addDeleteItem = new SetDeleteItem();
 
                 mainBean = arrAdapter.get(position);

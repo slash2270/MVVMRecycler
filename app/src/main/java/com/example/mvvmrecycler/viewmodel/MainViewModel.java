@@ -6,8 +6,9 @@ import android.content.Context;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
-import com.example.mvvmrecycler.datamodel.DataModel;
+import com.example.mvvmrecycler.datamodel.DynamicDataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
+import com.example.mvvmrecycler.datamodel.StaticDataModel;
 
 import java.util.ArrayList;
 
@@ -19,15 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 import static com.example.mvvmrecycler.tools.Function.arrMainCompare;
 
-public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize{
+public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdapterSize{
 
     public ObservableField<String> ovfNumber;
 
     public ObservableBoolean isLoading;
 
     private DBManager dbManager;
-
-    private DataModel dataModel;
 
     private ArrayList<MainBean> arrView; //和arrAdapter屬於同步性質
     private RvAdapter adapter;
@@ -36,7 +35,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public void initView(){
 
-        dataModel = new DataModel();
         dbManager = new DBManager();
 
         ovfNumber = new ObservableField<>();
@@ -51,45 +49,22 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
         isLoading.set(true);
 
-        dataModel.setTextTitleBtn(new DataModel.SetTextTitleBtn() {
+        StaticDataModel staticDataModel = new StaticDataModel();
+        staticDataModel.setTextTitleBtn(new StaticDataModel.SetTextTitleBtn() {
             @Override
-            public void number(String number) {
-
-                ovfNumber.set(number);
-
-            }
+            public void number(String number) { ovfNumber.set(number); }
 
             @Override
-            public String title(String title) {
-
-                strTitle = title;
-
-                return strTitle;
-
-            }
+            public String title(String title) { strTitle = title;return strTitle; }
 
             @Override
-            public void url(String url) {
-
-                strUrl = url;
-
-            }
+            public void url(String url) { strUrl = url; }
 
             @Override
-            public void increase(String increase) {
-
-                strIncrease = increase;
-
-            }
+            public void increase(String increase) { strIncrease = increase; }
 
             @Override
-            public void refresh(String refresh) {
-
-                strRefresh = refresh;
-
-            }
-
-        });
+            public void refresh(String refresh) { strRefresh = refresh; } });
 
         isLoading.set(false);
 
@@ -97,13 +72,10 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public void getData(MainActivityBinding binding, Activity activity, Context context){
 
-        if(arrView.size() > 0){
+        if(arrView.size() > 0){ arrView = new ArrayList<>(); }
 
-           arrView = new ArrayList<>();
-
-        }
-
-        dataModel.setData(this, binding, activity, context, arrView);
+        DynamicDataModel dynamicDataModel = new DynamicDataModel(context,this, binding, activity, arrView);
+        dynamicDataModel.execute();
 
     }
 
@@ -115,12 +87,10 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
     }
 
     @Override
-    public void addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter;
-    }
+    public void addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter; }
 
     @Override
-    public void addArrSize(int arrSize) { arrViewSize = arrSize;
-    }
+    public void addArrSize(int arrSize) { arrViewSize = arrSize; }
 
     public void setBtnClick(MainActivityBinding binding, Activity activity, Context context){
 
