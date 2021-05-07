@@ -2,6 +2,7 @@ package com.example.mvvmrecycler.datamodel;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -14,9 +15,16 @@ import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
@@ -29,7 +37,7 @@ import static com.example.mvvmrecycler.tools.Function.getBackgroundColor;
 import static com.example.mvvmrecycler.tools.Function.getUrl;
 import static com.example.mvvmrecycler.tools.Function.setToast;
 
-public class DataModel {
+public class DataModel{
 
     private String number, title, url, color;
     private int id, i;

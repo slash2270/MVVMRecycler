@@ -61,9 +61,7 @@ public class DBManager{
 
     public void deleteDb(Context context, String dbname) {
 
-        runnable = () -> context.deleteDatabase(dbname);
-
-        handler.post(runnable);
+        context.deleteDatabase(dbname);
 
     }
 
@@ -73,19 +71,13 @@ public class DBManager{
 
     public void insertSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
 
-        runnable = () -> {
+        getHelper(context);
+        db = helper.getWritableDatabase();
 
-            getHelper(context);
-            db = helper.getWritableDatabase();
+        sql = "insert into " + tableName + " " + columns + " values " + questions;
 
-            sql = "insert into " + tableName + " " + columns + " values " + questions;
-
-            db.execSQL(sql, paramArgs);
-            db.close();
-
-        };
-
-        handler.post(runnable);
+        db.execSQL(sql, paramArgs);
+        db.close();
 
     }
 
@@ -95,19 +87,13 @@ public class DBManager{
 
     public void deleteSQLite(Context context, String tableName, String columns, String questions, Object[] paramArgs){
 
-        runnable = () -> {
+        getHelper(context);
+        db = helper.getWritableDatabase();
 
-            getHelper(context);
-            db = helper.getWritableDatabase();
+        sql = "delete from " + tableName + " where " + columns + " = " + questions;
 
-            sql = "delete from " + tableName + " where " + columns + " = " + questions;
-
-            db.execSQL(sql,paramArgs);
-            db.close();
-
-        };
-
-        handler.post(runnable);
+        db.execSQL(sql,paramArgs);
+        db.close();
 
     }
 

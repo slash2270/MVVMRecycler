@@ -124,8 +124,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
 
     public void setBtnClick(MainActivityBinding binding, Activity activity, Context context){
 
-        Runnable runIncrease = (() -> {
-
             binding.btnIncrease.setOnClickListener(v -> {
 
                 adapter.addItem(arrViewSize);
@@ -143,10 +141,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
                 return false;
             });
 
-        });
-
-        Runnable runRefresh = (() -> {
-
             binding.btnRefresh.setOnClickListener(v -> {
 
                 dbManager.deleteDb(context, DATABASE_NAME);
@@ -162,11 +156,6 @@ public class MainViewModel extends ViewModel implements DataModel.GetAdapterSize
                 return false;
 
             });
-
-        });
-
-        new Thread(runIncrease).start();
-        new Thread(runRefresh).start();
 
     }
 

@@ -79,7 +79,6 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
         public void setBindViewHolder(ItemViewHolder holder, Activity activity, Context context, ArrayList<MainBean> arrAdapter, int position, DBManager dbManager, String strParamId, String strQuestion, RvAdapter rvAdapter){
 
-            Runnable runnable = () -> {
 
                 SetDeleteItem addDeleteItem = new SetDeleteItem();
 
@@ -93,10 +92,6 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
                 holder.mainListItemBinding.llContent.setOnLongClickListener(v -> { setToast(context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT); return false; });
                 holder.mainListItemBinding.cardMenu.setOnClickListener(v -> addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter));
                 holder.mainListItemBinding.cardMenu.setOnLongClickListener(v -> { addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter); return false; });
-
-            };
-
-            activity.runOnUiThread(runnable);
 
         }
 
