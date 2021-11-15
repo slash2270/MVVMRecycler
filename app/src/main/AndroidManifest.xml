@@ -17,7 +17,7 @@
         android:theme="@style/Theme.MVVMRecycler"
         android:fullBackupContent="@xml/backup_descriptor">
         <activity android:name=".view.MainActivity"
-            android:exported="true"/> <!-- sdk 31適用 四大組件都要加-->
+            android:exported="true"/> <!-- sdk 31適用 -->
         <activity android:name=".view.LoginActivity"
             android:exported="true">
             <intent-filter>
