@@ -79,18 +79,18 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
         public void setBindViewHolder(ItemViewHolder holder, Activity activity, Context context, ArrayList<MainBean> arrAdapter, int position, DBManager dbManager, String strParamId, String strQuestion, RvAdapter rvAdapter){
 
-                SetDeleteItem addDeleteItem = new SetDeleteItem();
+            SetDeleteItem addDeleteItem = new SetDeleteItem();
 
-                mainBean = arrAdapter.get(position);
+            mainBean = arrAdapter.get(position);
 
-                holder.bindItem(mainBean);
-                holder.mainListItemBinding.llContent.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
-                holder.mainListItemBinding.lldelete.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
-                holder.mainListItemBinding.tvDelete.setText("刪除");
-                holder.mainListItemBinding.llContent.setOnClickListener(v -> setToast(context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT));
-                holder.mainListItemBinding.llContent.setOnLongClickListener(v -> { setToast(context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT); return false; });
-                holder.mainListItemBinding.cardMenu.setOnClickListener(v -> addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter));
-                holder.mainListItemBinding.cardMenu.setOnLongClickListener(v -> { addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter); return false; });
+            holder.bindItem(mainBean);
+            holder.mainListItemBinding.llContent.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
+            holder.mainListItemBinding.lldelete.setBackgroundColor(Color.parseColor(arrAdapter.get(position).getColor()));
+            holder.mainListItemBinding.tvDelete.setText("刪除");
+            holder.mainListItemBinding.llContent.setOnClickListener(v -> setToast(context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT));
+            holder.mainListItemBinding.llContent.setOnLongClickListener(v -> { setToast(context, arrAdapter.get(position).getTitle(), Toast.LENGTH_SHORT); return false; });
+            holder.mainListItemBinding.cardMenu.setOnClickListener(v -> addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter));
+            holder.mainListItemBinding.cardMenu.setOnLongClickListener(v -> { addDeleteItem.deleteItem(context, arrAdapter, position, dbManager, strParamId, strQuestion, rvAdapter); return false; });
 
         }
 

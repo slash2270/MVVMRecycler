@@ -1,12 +1,9 @@
 package com.example.mvvmrecycler.datamodel;
-
 import android.app.Activity;
 import android.content.Context;
-
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
-
 import java.util.ArrayList;
 
 public class AddAdapter {

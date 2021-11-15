@@ -5,15 +5,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.widget.Button;
-
 import com.example.mvvmrecycler.R;
 
 public class LoginBtn {
 
-    public void setBtn(Activity activity){
+    public void setBtn(Activity activity) {
 
         Button btnLogin = activity.findViewById(R.id.btnLogin);
-
         btnLogin.setGravity(Gravity.CENTER);
         btnLogin.setText("登入");
         btnLogin.setTextSize(20);
@@ -27,6 +25,5 @@ public class LoginBtn {
         });
 
     }
-
 
 }

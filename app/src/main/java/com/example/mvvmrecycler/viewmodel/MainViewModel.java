@@ -1,24 +1,20 @@
 package com.example.mvvmrecycler.viewmodel;
-
 import android.app.Activity;
 import android.content.Context;
-
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DynamicDataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 import com.example.mvvmrecycler.datamodel.StaticDataModel;
-
+import com.example.mvvmrecycler.tools.Function;
 import java.util.ArrayList;
-
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
-import static com.example.mvvmrecycler.tools.Function.arrMainCompare;
 
 public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdapterSize{
 
@@ -48,9 +44,9 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
     public void setTitleBtn(){
 
         isLoading.set(true);
-
         StaticDataModel staticDataModel = new StaticDataModel();
         staticDataModel.setTextTitleBtn(new StaticDataModel.SetTextTitleBtn() {
+
             @Override
             public void number(String number) { ovfNumber.set(number); }
 
@@ -70,12 +66,11 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
 
     }
 
-    public void getData(MainActivityBinding binding, Activity activity, Context context){
+    public void getData(Context context, Activity activity, MainActivityBinding binding){
 
         if(arrView.size() > 0){ arrView = new ArrayList<>(); }
-
-        DynamicDataModel dynamicDataModel = new DynamicDataModel(context,this, binding, activity, arrView);
-        dynamicDataModel.execute();
+        DynamicDataModel dynamicDataModel = new DynamicDataModel();
+        dynamicDataModel.getData(activity, context, binding, arrView, this);
 
     }
 
@@ -94,38 +89,38 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
 
     public void setBtnClick(MainActivityBinding binding, Activity activity, Context context){
 
-            binding.btnIncrease.setOnClickListener(v -> {
+        binding.btnIncrease.setOnClickListener(v -> {
 
-                adapter.addItem(arrViewSize);
+            adapter.addItem(arrViewSize);
 
-                arrMainCompare(arrView);
+            Function.arrMainCompare(arrView);
 
-            });
+        });
 
-            binding.btnIncrease.setOnLongClickListener(v -> {
+        binding.btnIncrease.setOnLongClickListener(v -> {
 
-                adapter.addItem(arrViewSize);
+            adapter.addItem(arrViewSize);
 
-                arrMainCompare(arrView);
+            Function.arrMainCompare(arrView);
 
-                return false;
-            });
+            return false;
+        });
 
-            binding.btnRefresh.setOnClickListener(v -> {
+        binding.btnRefresh.setOnClickListener(v -> {
 
-                dbManager.deleteDb(context, DATABASE_NAME);
-                getData(binding, activity, context);
+            dbManager.deleteDb(context, DATABASE_NAME);
+            getData(context, activity, binding);
 
-            });
+        });
 
-            binding.btnRefresh.setOnLongClickListener(v -> {
+        binding.btnRefresh.setOnLongClickListener(v -> {
 
-                dbManager.deleteDb(context, DATABASE_NAME);
-                getData(binding, activity, context);
+            dbManager.deleteDb(context, DATABASE_NAME);
+            getData(context, activity, binding);
 
-                return false;
+            return false;
 
-            });
+        });
 
     }
 

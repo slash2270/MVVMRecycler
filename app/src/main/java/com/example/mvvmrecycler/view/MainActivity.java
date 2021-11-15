@@ -1,14 +1,10 @@
 package com.example.mvvmrecycler.view;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-
 import android.os.Bundle;
-
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
-
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         model.initView();
         model.setTitleBtn();
         model.setRv(binding);
-        model.getData(binding, this, getApplicationContext());
+        model.getData(getApplicationContext(), this, binding);
         model.setBtnClick(binding, this, getApplicationContext());
 
         binding.setModel(model);

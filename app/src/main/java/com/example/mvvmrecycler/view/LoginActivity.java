@@ -1,5 +1,4 @@
 package com.example.mvvmrecycler.view;
-
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.mvvmrecycler.R;

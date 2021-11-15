@@ -26,7 +26,7 @@ public class SetDbData {
 
         };
 
-        new Handler().postDelayed(runnable, 3000);
+        new Handler().post(runnable);
 
     }
 
