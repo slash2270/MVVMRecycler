@@ -3,7 +3,6 @@ package com.example.mvvmrecycler.data;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Handler;
 
 import java.util.ArrayList;
 
@@ -30,8 +29,7 @@ public class DBManager{
     private String sql;
     private int id;
     private Cursor cursor;
-    private final Handler handler = new Handler();
-    private Runnable runnable;
+
     // private String dbColumnClause;
 
     /**
@@ -40,7 +38,7 @@ public class DBManager{
 
     public void getHelper(Context context){
 
-        handler.removeCallbacks(runnable);
+        //handler.removeCallbacks(runnable);
 
         if (helper == null){
             helper = new DBHelper(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -58,7 +56,7 @@ public class DBManager{
      *  刪除資料庫
      */
 
-    public void deleteDb(Context context, String dbname) {
+    public void deleteDb(Context context, String dbname){
 
         context.deleteDatabase(dbname);
 

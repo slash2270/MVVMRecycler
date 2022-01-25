@@ -1,10 +1,12 @@
 package com.example.mvvmrecycler.adapter;
+
 import android.content.Context;
 import android.widget.Toast;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.tools.Function;
 import java.util.ArrayList;
+
 import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
 
 public class SetDeleteItem {

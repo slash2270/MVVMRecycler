@@ -32,7 +32,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
     private final Activity activity;
     private final Context context;
     private ArrayList<MainBean> arrAdapter;
-    private MainListItemBinding binding;
+    public MainListItemBinding binding;
     private MainBean mainBean;
     private String strParamId;
     private String strQuestion;
@@ -103,11 +103,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
 
     public void addItem(int arrActivitySize) {
 
-        if (arrAdapter.size() == arrActivitySize) { // 判斷adapter和activity裡的值
-
-            setToast(context, " 已顯示最多資料, 謝謝 ", Toast.LENGTH_SHORT);
-
-        } else if (arrAdapter.size() < arrActivitySize) {
+        if (arrAdapter.size() < arrActivitySize) {
 
             dbManager.selectSQLite(context, TABLE_NAME_RV);
             ArrayList<RvBean> arrRv = dbManager.cursorRvList();
@@ -124,6 +120,10 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
             Object[] arrObjParamId = new Object[]{intParamId};
             dbManager.deleteSQLite(context, TABLE_NAME_RV, strParamId, strQuestion, arrObjParamId);
             notifyDataSetChanged();
+
+        } else { // 判斷adapter和activity裡的值
+
+            setToast(context, " 已顯示最多資料, 謝謝 ", Toast.LENGTH_SHORT);
 
         }
 

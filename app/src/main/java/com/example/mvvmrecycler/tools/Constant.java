@@ -22,5 +22,14 @@ public class Constant {
     public static final String TABLE_NAME_RV = "rv_table";
     public static final String RV_ID = "id";
 
-}
+    // handler
+    public static final int HANDLER_MESSAGE = 1;
+    public static final String MESSAGE_KEY = "key";
 
+    // flag
+    public static final String FLAG_MAIN = "MainActivity";
+
+    // activity
+    public static final String LIFE_CYCLE = "LifeCycle";
+
+}

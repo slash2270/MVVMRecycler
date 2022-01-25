@@ -1,6 +1,9 @@
 package com.example.mvvmrecycler.viewmodel;
-import android.app.Activity;
+
 import android.content.Context;
+import android.os.Handler;
+import android.widget.Button;
+
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
@@ -8,15 +11,19 @@ import com.example.mvvmrecycler.datamodel.DynamicDataModel;
 import com.example.mvvmrecycler.databinding.MainActivityBinding;
 import com.example.mvvmrecycler.datamodel.StaticDataModel;
 import com.example.mvvmrecycler.tools.Function;
+import com.example.mvvmrecycler.view.MainActivity;
+
 import java.util.ArrayList;
+
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 
-public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdapterSize{
+public class MainViewModel extends ViewModel implements DynamicDataModel.GetArrayList, DynamicDataModel.GetAdapter {
 
     public ObservableField<String> ovfNumber;
 
@@ -24,10 +31,10 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
 
     private DBManager dbManager;
 
-    private ArrayList<MainBean> arrView; //和arrAdapter屬於同步性質
-    private RvAdapter adapter;
+    private ArrayList<MainBean> arrView = new ArrayList<>();
     public String strTitle, strUrl, strRefresh, strIncrease;
-    private int arrViewSize;
+    private RvAdapter adapter;
+    private int dataSize;
 
     public void initView(){
 
@@ -36,8 +43,6 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
         ovfNumber = new ObservableField<>();
 
         isLoading = new ObservableBoolean(false);
-
-        arrView = new ArrayList<>();
 
     }
 
@@ -66,62 +71,75 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetAdap
 
     }
 
-    public void getData(Context context, Activity activity, MainActivityBinding binding){
+    public void getData(Handler handler, MainActivity activity, MainActivityBinding binding, Context context){
 
-        if(arrView.size() > 0){ arrView = new ArrayList<>(); }
+        if(arrView.size() > 0)
+            arrView = new ArrayList<>();
         DynamicDataModel dynamicDataModel = new DynamicDataModel();
-        dynamicDataModel.getData(activity, context, binding, arrView, this);
+        dynamicDataModel.getData(handler, activity, binding, context, this, this);
 
     }
 
-    public void setRv(MainActivityBinding binding) {
+    public void setRv(RecyclerView recyclerView) {
 
-        binding.rv.setHasFixedSize(true);
-        binding.rv.setLayoutManager(new LinearLayoutManager(binding.rv.getContext()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
 
     }
 
-    @Override
-    public void addRvAdapter(RvAdapter rvAdapter) { adapter = rvAdapter; }
+    public void setBtnClick(Handler handler, MainActivity mainActivity, MainActivityBinding binding, Context context, Button btnIncrease, Button btnRefresh){
 
-    @Override
-    public void addArrSize(int arrSize) { arrViewSize = arrSize; }
+        btnIncrease.setEnabled(false);
+        btnRefresh.setEnabled(false);
 
-    public void setBtnClick(MainActivityBinding binding, Activity activity, Context context){
+        btnIncrease.setOnClickListener(v -> {
 
-        binding.btnIncrease.setOnClickListener(v -> {
-
-            adapter.addItem(arrViewSize);
-
+            adapter.addItem(dataSize);
             Function.arrMainCompare(arrView);
 
         });
 
-        binding.btnIncrease.setOnLongClickListener(v -> {
+        btnIncrease.setOnLongClickListener(v -> {
 
-            adapter.addItem(arrViewSize);
-
+            adapter.addItem(dataSize);
             Function.arrMainCompare(arrView);
 
             return false;
-        });
-
-        binding.btnRefresh.setOnClickListener(v -> {
-
-            dbManager.deleteDb(context, DATABASE_NAME);
-            getData(context, activity, binding);
 
         });
 
-        binding.btnRefresh.setOnLongClickListener(v -> {
+        btnRefresh.setOnClickListener(v -> {
 
             dbManager.deleteDb(context, DATABASE_NAME);
-            getData(context, activity, binding);
+            getData(handler, mainActivity, binding, context);
+
+            //context.sendBroadcast(new Intent(FLAG_MAIN));
+
+        });
+
+        btnRefresh.setOnLongClickListener(v -> {
+
+            dbManager.deleteDb(context, DATABASE_NAME);
+            getData(handler, mainActivity, binding, context);
+
+            //context.sendBroadcast(new Intent(FLAG_MAIN));
 
             return false;
 
         });
 
+    }
+
+    @Override
+    public void addArr(ArrayList<MainBean> arr) {
+        arrView = arr;
+        dataSize = arr.size();
+    }
+
+    @Override
+    public void addRvAdapter(RvAdapter rvAdapter) {
+        adapter = rvAdapter;
+        dataSize = adapter.getItemCount();
     }
 
 }
