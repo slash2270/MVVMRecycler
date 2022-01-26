@@ -31,7 +31,7 @@ public class DynamicDataModel {
         String apiUrl = "https://jsonplaceholder.typicode.com/photos";
 
         // 資料長度可自由更改,最多5000筆
-        //  依需求選擇DB是否存取本機資料
+        // 依需求選擇DB是否存取本機資料
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, apiUrl, null,
                 response -> {
 

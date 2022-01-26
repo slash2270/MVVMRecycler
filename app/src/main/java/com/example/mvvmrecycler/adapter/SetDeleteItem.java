@@ -31,7 +31,7 @@ public class SetDeleteItem {
                 dbManager.insertLine(context, TABLE_NAME_RV, RV_COLUMNS, RV_QUESTIONS, arrObjParamId);
                 arrAdapter.remove(position);
                 rvAdapter.notifyItemRemoved(position);
-                //rvAdapter.notifyDataSetChanged();
+                rvAdapter.notifyDataSetChanged();
 
             };
 

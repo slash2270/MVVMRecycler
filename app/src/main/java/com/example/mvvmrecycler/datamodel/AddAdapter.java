@@ -16,7 +16,7 @@ public class AddAdapter {
 
         RvAdapter rvAdapter = new RvAdapter(activity, context, arrView, function, handler, runDel);
         binding.rv.setAdapter(rvAdapter);
-        //rvAdapter.notifyDataSetChanged();
+        rvAdapter.notifyDataSetChanged();
 
         return rvAdapter;
 

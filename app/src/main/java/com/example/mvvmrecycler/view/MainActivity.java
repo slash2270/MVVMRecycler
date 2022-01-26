@@ -1,29 +1,23 @@
 package com.example.mvvmrecycler.view;
+
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.base.BaseActivity;
-import com.example.mvvmrecycler.data.DBHelper;
-import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
 
 import static com.example.mvvmrecycler.tools.Constant.MESSAGE_WHAT_DATA;
 import static com.example.mvvmrecycler.tools.Constant.LIFE_CYCLE;
 import static com.example.mvvmrecycler.tools.Constant.FLAG_MAIN;
-import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
-import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
 
 public class MainActivity extends BaseActivity {
 
@@ -32,12 +26,15 @@ public class MainActivity extends BaseActivity {
     private Runnable runDel;
     private RecyclerView recyclerView;
     private Button btnIncrease, btnRefresh;
+    private Set set;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Log.e(LIFE_CYCLE,"onCreate");
+
+        set = new Set();
 
         setCallback();
 
@@ -47,18 +44,7 @@ public class MainActivity extends BaseActivity {
 
         MainViewModel model = new MainViewModel();
 
-        model.initView();
-        model.setTitleBtn();
-        model.setRv(recyclerView);
-
-        new Thread(() -> { // work
-            Looper.prepare();
-            model.getData(handler, runDel,this, binding, getApplicationContext());
-            model.setBtnClick(handler, runDel,this, binding, getApplicationContext(), btnIncrease, btnRefresh);
-            Looper.loop();
-        }).start();
-
-        //Log.d(MSG + " create ", String.valueOf(arrayList.size()));
+        set.viewModel(this, model, handler, runDel, binding, getApplicationContext(), recyclerView, btnIncrease, btnRefresh);
 
         binding.setModel(model);
 
@@ -109,29 +95,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        clearTable();
-        handler.removeCallbacks(runDel);
-        handler.removeMessages(MESSAGE_WHAT_DATA);
-        handler.removeCallbacksAndMessages(callbackData);
+        set.clearTable(getApplicationContext());
+        set.destroy(callbackData, handler, runDel);
         Log.e(LIFE_CYCLE,"onDestroy");
+        super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
 
-        clearTable();
-
-    }
-
-    private void clearTable(){
-
-        DBManager dbManager = new DBManager();
-        DBHelper dbHelper = dbManager.getHelper(getApplicationContext());
-        SQLiteDatabase database = dbHelper.getWritableDatabase();
-        dbManager.deleteLines(TABLE_NAME_MAIN, database);
-        dbManager.deleteLines(TABLE_NAME_RV, database);
+        set.clearTable(getApplicationContext());
 
     }
 
@@ -142,28 +116,18 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private class HandlerCallBack implements Handler.Callback{
+    public class HandlerCallBack implements Handler.Callback{
 
         @Override
         public boolean handleMessage(@NonNull Message message) {
 
             if (message.what == MESSAGE_WHAT_DATA) {
-                showAlterDialog();
+                set.alterDialog(MainActivity.this);
                 btnIncrease.setEnabled(true);
                 btnRefresh.setEnabled(true);
             }
 
             return true;
-        }
-
-        private void showAlterDialog(){
-
-            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-            alertDialog.setTitle("已存入SQLite");
-            alertDialog.setPositiveButton("確定", (dialog, which) -> dialog.dismiss());
-            alertDialog.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-            alertDialog.show();
-
         }
 
     }
