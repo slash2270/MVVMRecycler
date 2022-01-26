@@ -26,7 +26,7 @@ public class Function {
         return Math.round((float) dp * density);
     }
 
-    public static String httpConnectionGet(Context context, String apiUrl) {
+    public String httpConnectionGet(Context context, String apiUrl) {
 
         StringBuilder result = new StringBuilder();
         HttpURLConnection urlConnection = null;
@@ -58,7 +58,7 @@ public class Function {
         return result.toString();
     }
 
-    public static void arrIntCompare(ArrayList<Integer>arrayList){
+    public void arrIntCompare(ArrayList<Integer>arrayList){
 
         Collections.sort(arrayList, new Comparator<Integer>() { // o1-o2小於 o2-o1大於
             @Override
@@ -77,7 +77,7 @@ public class Function {
 
     }
 
-    public static void arrMainCompare(ArrayList<MainBean>arrayList){
+    public void arrMainCompare(ArrayList<MainBean>arrayList){
 
         Collections.sort(arrayList, new Comparator<MainBean>() { // o1-o2小於 o2-o1大於
             @Override
@@ -96,7 +96,7 @@ public class Function {
 
     }
 
-    public static void setToast(Context context, String text, int duration) {
+    public void setToast(Context context, String text, int duration) {
 
         Toast.makeText(context, text, duration).show();
 

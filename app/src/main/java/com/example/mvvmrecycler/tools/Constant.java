@@ -22,8 +22,14 @@ public class Constant {
     public static final String TABLE_NAME_RV = "rv_table";
     public static final String RV_ID = "id";
 
+    // sql
+    public static final String MAIN_COLUMNS = "(" + MAIN_ID + ", " + MAIN_NUMBER + ", " + MAIN_TITLE + ", " + MAIN_URL + ", " + MAIN_COLOR + ")";
+    public static final String MAIN_QUESTIONS = "(?,?,?,?,?)";
+    public static final String RV_COLUMNS = "(" + RV_ID + ")";
+    public static final String RV_QUESTIONS = "(?)";
+
     // handler
-    public static final int HANDLER_MESSAGE = 1;
+    public static final int MESSAGE_WHAT_DATA = 1;
     public static final String MESSAGE_KEY = "key";
 
     // flag

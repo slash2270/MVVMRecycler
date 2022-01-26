@@ -5,26 +5,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.widget.Button;
 
 import com.example.mvvmrecycler.R;
 import com.example.mvvmrecycler.base.BaseActivity;
+import com.example.mvvmrecycler.data.DBHelper;
 import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.viewmodel.MainViewModel;
 
-import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
-import static com.example.mvvmrecycler.tools.Constant.HANDLER_MESSAGE;
+import static com.example.mvvmrecycler.tools.Constant.MESSAGE_WHAT_DATA;
 import static com.example.mvvmrecycler.tools.Constant.LIFE_CYCLE;
 import static com.example.mvvmrecycler.tools.Constant.FLAG_MAIN;
+import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_MAIN;
+import static com.example.mvvmrecycler.tools.Constant.TABLE_NAME_RV;
 
 public class MainActivity extends BaseActivity {
 
     private Handler handler;
-    private Handler.Callback callback;
+    private Handler.Callback callbackData;
+    private Runnable runDel;
     private RecyclerView recyclerView;
     private Button btnIncrease, btnRefresh;
 
@@ -45,8 +50,13 @@ public class MainActivity extends BaseActivity {
         model.initView();
         model.setTitleBtn();
         model.setRv(recyclerView);
-        model.getData(handler, this, binding, getApplicationContext());
-        model.setBtnClick(handler, this, binding, getApplicationContext(), btnIncrease, btnRefresh);
+
+        new Thread(() -> { // work
+            Looper.prepare();
+            model.getData(handler, runDel,this, binding, getApplicationContext());
+            model.setBtnClick(handler, runDel,this, binding, getApplicationContext(), btnIncrease, btnRefresh);
+            Looper.loop();
+        }).start();
 
         //Log.d(MSG + " create ", String.valueOf(arrayList.size()));
 
@@ -100,8 +110,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeMessages(HANDLER_MESSAGE);
-        handler.removeCallbacksAndMessages(callback);
+        clearTable();
+        handler.removeCallbacks(runDel);
+        handler.removeMessages(MESSAGE_WHAT_DATA);
+        handler.removeCallbacksAndMessages(callbackData);
         Log.e(LIFE_CYCLE,"onDestroy");
     }
 
@@ -109,21 +121,24 @@ public class MainActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
-        delDb();
+        clearTable();
 
     }
 
-    private void delDb(){
+    private void clearTable(){
 
         DBManager dbManager = new DBManager();
-        dbManager.deleteDb(getApplicationContext(), DATABASE_NAME);
+        DBHelper dbHelper = dbManager.getHelper(getApplicationContext());
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+        dbManager.deleteLines(TABLE_NAME_MAIN, database);
+        dbManager.deleteLines(TABLE_NAME_RV, database);
 
     }
 
     public void setCallback(){
 
-        callback = new HandlerCallBack();
-        handler = new Handler(callback);
+        callbackData = new HandlerCallBack();
+        handler = new Handler(callbackData);
 
     }
 
@@ -132,7 +147,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public boolean handleMessage(@NonNull Message message) {
 
-            if (message.what == HANDLER_MESSAGE) {
+            if (message.what == MESSAGE_WHAT_DATA) {
                 showAlterDialog();
                 btnIncrease.setEnabled(true);
                 btnRefresh.setEnabled(true);
@@ -144,7 +159,7 @@ public class MainActivity extends BaseActivity {
         private void showAlterDialog(){
 
             final AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-            alertDialog.setTitle("已下載完畢");
+            alertDialog.setTitle("已存入SQLite");
             alertDialog.setPositiveButton("確定", (dialog, which) -> dialog.dismiss());
             alertDialog.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
             alertDialog.show();

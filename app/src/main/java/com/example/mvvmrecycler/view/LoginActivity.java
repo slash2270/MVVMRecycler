@@ -1,7 +1,10 @@
 package com.example.mvvmrecycler.view;
+import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.mvvmrecycler.R;
+import com.example.mvvmrecycler.data.DBManager;
 
 public class LoginActivity extends AppCompatActivity{
 
@@ -16,6 +19,13 @@ public class LoginActivity extends AppCompatActivity{
         LoginBtn addBtn = new LoginBtn();
         addBtn.setBtn(this);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        DBManager dbManager = new DBManager();
+        dbManager.deleteDb(getApplicationContext(), DATABASE_NAME);
+        super.onDestroy();
     }
 
 }

@@ -22,7 +22,7 @@ import static com.example.mvvmrecycler.tools.Function.getUrl;
 
 public class DynamicDataModel {
 
-    public void getData(Handler handler, MainActivity activity, MainActivityBinding binding, Context context, GetArrayList getArrayList, GetAdapter getAdapter) { // Volley
+    public void getData(Handler handler, Runnable runDel, MainActivity activity, MainActivityBinding binding, Context context, GetArrayList getArrayList, GetAdapter getAdapter, Function function) { // Volley
 
         ArrayList<MainBean> arrayList = new ArrayList<>();
 
@@ -64,7 +64,7 @@ public class DynamicDataModel {
                     //Log.d(MSG + " data ", String.valueOf(arrayList.size()));
 
                     AddAdapter addAdapter = new AddAdapter();
-                    RvAdapter rvAdapter = addAdapter.setAdapter(activity, context, binding, arrayList);
+                    RvAdapter rvAdapter = addAdapter.setAdapter(activity, context, binding, arrayList, function, handler, runDel);
 
                     getArrayList.addArr(arrayList);
                     getAdapter.addRvAdapter(rvAdapter);
@@ -72,7 +72,7 @@ public class DynamicDataModel {
                     //  依需求選擇DB是否存取本機資料
                     new SetDbData().addDbData(handler, context, arrayList);
 
-                }, error -> Function.setToast(context, " 載入資料錯誤, 請檢查網路或聯絡資訊相關人員, 謝謝 ", Toast.LENGTH_SHORT));
+                }, error -> function.setToast(context, " 載入資料錯誤, 請檢查網路或聯絡資訊相關人員, 謝謝 ", Toast.LENGTH_SHORT));
 
         requestQueue.add(jsonArrayRequest);
 

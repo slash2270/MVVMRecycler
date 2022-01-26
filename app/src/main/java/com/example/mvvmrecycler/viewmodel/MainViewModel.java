@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.widget.Button;
 
-import com.example.mvvmrecycler.data.DBManager;
 import com.example.mvvmrecycler.data.MainBean;
 import com.example.mvvmrecycler.adapter.RvAdapter;
 import com.example.mvvmrecycler.datamodel.DynamicDataModel;
@@ -21,24 +20,19 @@ import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
-
 public class MainViewModel extends ViewModel implements DynamicDataModel.GetArrayList, DynamicDataModel.GetAdapter {
 
     public ObservableField<String> ovfNumber;
-
     public ObservableBoolean isLoading;
-
-    private DBManager dbManager;
-
     private ArrayList<MainBean> arrView = new ArrayList<>();
     public String strTitle, strUrl, strRefresh, strIncrease;
     private RvAdapter adapter;
     private int dataSize;
+    private Function function;
 
     public void initView(){
 
-        dbManager = new DBManager();
+        function = new Function();
 
         ovfNumber = new ObservableField<>();
 
@@ -71,12 +65,12 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetArra
 
     }
 
-    public void getData(Handler handler, MainActivity activity, MainActivityBinding binding, Context context){
+    public void getData(Handler handler, Runnable runDel, MainActivity activity, MainActivityBinding binding, Context context){
 
         if(arrView.size() > 0)
             arrView = new ArrayList<>();
         DynamicDataModel dynamicDataModel = new DynamicDataModel();
-        dynamicDataModel.getData(handler, activity, binding, context, this, this);
+        dynamicDataModel.getData(handler, runDel, activity, binding, context, this, this, function);
 
     }
 
@@ -87,7 +81,7 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetArra
 
     }
 
-    public void setBtnClick(Handler handler, MainActivity mainActivity, MainActivityBinding binding, Context context, Button btnIncrease, Button btnRefresh){
+    public void setBtnClick(Handler handler, Runnable runDel, MainActivity mainActivity, MainActivityBinding binding, Context context, Button btnIncrease, Button btnRefresh){
 
         btnIncrease.setEnabled(false);
         btnRefresh.setEnabled(false);
@@ -95,14 +89,14 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetArra
         btnIncrease.setOnClickListener(v -> {
 
             adapter.addItem(dataSize);
-            Function.arrMainCompare(arrView);
+            function.arrMainCompare(arrView);
 
         });
 
         btnIncrease.setOnLongClickListener(v -> {
 
             adapter.addItem(dataSize);
-            Function.arrMainCompare(arrView);
+            function.arrMainCompare(arrView);
 
             return false;
 
@@ -110,8 +104,9 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetArra
 
         btnRefresh.setOnClickListener(v -> {
 
-            dbManager.deleteDb(context, DATABASE_NAME);
-            getData(handler, mainActivity, binding, context);
+            btnIncrease.setEnabled(false);
+            btnRefresh.setEnabled(false);
+            getData(handler, runDel, mainActivity, binding, context);
 
             //context.sendBroadcast(new Intent(FLAG_MAIN));
 
@@ -119,8 +114,9 @@ public class MainViewModel extends ViewModel implements DynamicDataModel.GetArra
 
         btnRefresh.setOnLongClickListener(v -> {
 
-            dbManager.deleteDb(context, DATABASE_NAME);
-            getData(handler, mainActivity, binding, context);
+            btnIncrease.setEnabled(false);
+            btnRefresh.setEnabled(false);
+            getData(handler, runDel, mainActivity, binding, context);
 
             //context.sendBroadcast(new Intent(FLAG_MAIN));
 
