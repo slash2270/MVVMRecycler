@@ -85,7 +85,6 @@ public class DBManager{
         sql.append("insert into ").append(tableName).append(" ").append(columns).append(" values ").append(questions);
 
         db.execSQL(sql.toString(), paramArgs);
-      //  db.close();
 
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -98,7 +97,6 @@ public class DBManager{
         sql.append("insert into ").append(tableName).append(" ").append(columns).append(" values ").append(questions);
 
         database.execSQL(sql.toString(), paramArgs);
-      //  db.close();
 
     }
 
@@ -115,7 +113,6 @@ public class DBManager{
         sql.append("delete from ").append(tableName).append(" where ").append(columns).append(" = ").append(questions);
 
         db.execSQL(sql.toString(), paramArgs);
-     //   db.close();
 
     }
 
@@ -125,7 +122,6 @@ public class DBManager{
         sql.append("delete from ").append(tableName);
 
         database.execSQL(sql.toString());
-        //   db.close();
 
     }
 
@@ -139,7 +135,6 @@ public class DBManager{
         sql.append("drop table ").append(tableName);
 
         db.execSQL(sql.toString());
-     //   db.close();
 
         db.setTransactionSuccessful();
         db.endTransaction();
@@ -244,21 +239,12 @@ public class DBManager{
 
         public void insertAndroid(Context context, String tableName, ContentValues cv, String key, String value){
 
-        runnable = () -> {
-
-            handler.post(runnable);
-
-            getHelper(context);
+       getHelper(context);
             db = helper.getWritableDatabase();
 
             cv.put(key, value);
 
             db.insert(tableName, null, cv);
-            db.close();
-
-        };
-
-        handler.post(runnable);
 
     }
 
@@ -274,19 +260,12 @@ public class DBManager{
 
         dbColumnClause = columnClause;
 
-        runnable = () -> {
-
-            getHelper(context);
+           getHelper(context);
             db = helper.getWritableDatabase();
 
             dbColumnClause = dbColumnClause + " = ?";
 
             db.delete(tableName, dbColumnClause, paramArgs);
-            db.close();
-
-        };
-
-        handler.post(runnable);
 
     }
 
