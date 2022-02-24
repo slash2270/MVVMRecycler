@@ -3,30 +3,19 @@ package com.example.mvvmrecycler.data;
 public class MainBean {
 
     public int id;
-    public String number, title, url, color;
+    public String title, url, color;
 
-    public MainBean(int id, String number, String title, String url, String color) {
+    public MainBean(int id, String title, String url, String color) {
         this.id = id;
-        this.number = number;
         this.title = title;
         this.url = url;
         this.color = color;
     }
 
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     public String getTitle() {

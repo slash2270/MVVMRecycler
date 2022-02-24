@@ -113,7 +113,7 @@ public class RvAdapter extends RecyclerView.Adapter <ItemViewHolder>{
                 notifyItemInserted(intParamId - 1); //adapter插入position位置
                 Object[] arrObjParamId = new Object[]{intParamId};
                 dbManager.deleteLine(context, TABLE_NAME_RV, RV_COLUMNS, RV_QUESTIONS, arrObjParamId);
-                dbManager.closeDb();
+                //dbManager.closeDb();
                 notifyDataSetChanged();
 
             };

@@ -65,7 +65,7 @@ public class SetDbData {
 
         for(int j = 0; j < arrayList.size(); j++){
 
-            Object[] objectArr = new Object[]{arrayList.get(j).id, arrayList.get(j).number, arrayList.get(j).title, arrayList.get(j).url, arrayList.get(j).color};
+            Object[] objectArr = new Object[]{arrayList.get(j).id, arrayList.get(j).title, arrayList.get(j).url, arrayList.get(j).color};
             dbManager.insertLines(TABLE_NAME_MAIN, MAIN_COLUMNS, MAIN_QUESTIONS, objectArr, db);
 
             if (j == arrayList.size() - 1) {

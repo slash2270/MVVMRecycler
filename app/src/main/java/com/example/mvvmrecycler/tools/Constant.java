@@ -13,9 +13,8 @@ public class Constant {
     //  first table
     public static final String TABLE_NAME_MAIN = "main_table";
     public static final String MAIN_ID = "id";
-    public static final String MAIN_NUMBER = "name";
-    public static final String MAIN_TITLE = "number";
-    public static final String MAIN_URL = "content";
+    public static final String MAIN_TITLE = "title";
+    public static final String MAIN_URL = "url";
     public static final String MAIN_COLOR = "color";
 
     // second table
@@ -23,8 +22,8 @@ public class Constant {
     public static final String RV_ID = "id";
 
     // sql
-    public static final String MAIN_COLUMNS = "(" + MAIN_ID + ", " + MAIN_NUMBER + ", " + MAIN_TITLE + ", " + MAIN_URL + ", " + MAIN_COLOR + ")";
-    public static final String MAIN_QUESTIONS = "(?,?,?,?,?)";
+    public static final String MAIN_COLUMNS = "(" + MAIN_ID + ", " + MAIN_TITLE + ", " + MAIN_URL + ", " + MAIN_COLOR + ")";
+    public static final String MAIN_QUESTIONS = "(?,?,?,?)";
     public static final String RV_COLUMNS = "(" + RV_ID + ")";
     public static final String RV_QUESTIONS = "(?)";
 

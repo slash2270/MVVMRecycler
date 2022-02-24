@@ -2,7 +2,6 @@ package com.example.mvvmrecycler.data;
 
 import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
 import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_NUMBER;
 import static com.example.mvvmrecycler.tools.Constant.MAIN_TITLE;
 import static com.example.mvvmrecycler.tools.Constant.MAIN_URL;
 import static com.example.mvvmrecycler.tools.Constant.RV_ID;
@@ -27,7 +26,6 @@ public class DBHelper extends SQLiteOpenHelper{
         String mainSQL = "create table " + TABLE_NAME_MAIN+
                 "("
                 +MAIN_ID + " Integer primary key ,"
-                +MAIN_NUMBER + " varchar(20) ,"
                 +MAIN_TITLE + " varchar(200) ,"
                 +MAIN_URL + " varchar(20) ,"
                 +MAIN_COLOR + " varchar(20)" +

@@ -41,14 +41,13 @@ public class DynamicDataModel {
 
                             JSONObject jsonObjContent = response.getJSONObject(i);
 
-                            String number = jsonObjContent.get("id").toString().trim();
+                            int id = Integer.parseInt(jsonObjContent.get("id").toString());
                             String title = jsonObjContent.get("title").toString().trim();
                             String url = jsonObjContent.get("thumbnailUrl").toString().trim();
                             String color = getBackgroundColor(url);
                             url = getUrl(url);
-                            int id = Integer.parseInt(number);
 
-                            arrayList.add(new MainBean(id, number, title, url, color));
+                            arrayList.add(new MainBean(id, title, url, color));
 
                             //Log.d(MSG + " response ", String.valueOf(arrayList.size()));
 

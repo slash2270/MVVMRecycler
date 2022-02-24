@@ -8,12 +8,6 @@ import java.util.ArrayList;
 
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_NAME;
 import static com.example.mvvmrecycler.tools.Constant.DATABASE_VERSION;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_COLOR;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_ID;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_NUMBER;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_TITLE;
-import static com.example.mvvmrecycler.tools.Constant.MAIN_URL;
-import static com.example.mvvmrecycler.tools.Constant.RV_ID;
 
 /**
  * DB語法有兩種請自行新增
@@ -187,25 +181,26 @@ public class DBManager{
 
     public ArrayList<MainBean> cursorMainList(ArrayList<MainBean> arrayList){
 
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
 
-                id = cursor.getInt(cursor.getColumnIndex(MAIN_ID));
-                String number = cursor.getString(cursor.getColumnIndex(MAIN_NUMBER));
-                String title = cursor.getString(cursor.getColumnIndex(MAIN_TITLE));
-                String url = cursor.getString(cursor.getColumnIndex(MAIN_URL));
-                String color = cursor.getString(cursor.getColumnIndex(MAIN_COLOR));
+                id = cursor.getInt(0);
+                String title = cursor.getString(1);
+                String url = cursor.getString(2);
+                String color = cursor.getString(3);
 
-                arrayList.add(new MainBean(id, number, title, url, color));
+                arrayList.add(new MainBean(id, title, url, color));
 
                 cursor.moveToNext();
 
             }
 
-        }
+            cursor.close();
 
-        cursor.close(); // 先開後關
+        }
 
         return arrayList;
 
@@ -215,11 +210,13 @@ public class DBManager{
 
         ArrayList<RvBean> arrayList = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
+        if (cursor.getCount() > 0) {
+
+            cursor.moveToFirst();
 
             for (int i = 0; i < cursor.getCount(); i++) {
 
-                id = cursor.getInt(cursor.getColumnIndex(RV_ID));
+                id = cursor.getInt(0);
 
                 cursor.moveToNext();
 
@@ -227,9 +224,9 @@ public class DBManager{
 
             }
 
-        }
+            cursor.close();
 
-        cursor.close();
+        }
 
         return arrayList ;
 
