@@ -54,6 +54,14 @@ public class DBManager{
     }*/
 
     /**
+     *  關閉資料庫
+     */
+
+    public void closeDb(){
+        db.close();
+    }
+
+    /**
      *  刪除資料庫
      */
 

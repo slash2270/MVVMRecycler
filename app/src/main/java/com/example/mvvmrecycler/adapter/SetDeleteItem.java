@@ -29,6 +29,7 @@ public class SetDeleteItem {
                 int intParamId = arrAdapter.get(position).getId();
                 Object[] arrObjParamId = new Object[]{intParamId};
                 dbManager.insertLine(context, TABLE_NAME_RV, RV_COLUMNS, RV_QUESTIONS, arrObjParamId);
+                dbManager.closeDb();
                 arrAdapter.remove(position);
                 rvAdapter.notifyItemRemoved(position);
                 rvAdapter.notifyDataSetChanged();
