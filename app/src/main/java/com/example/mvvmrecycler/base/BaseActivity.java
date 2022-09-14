@@ -48,8 +48,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void registerReceiver(String... actions) {
         IntentFilter filter = new IntentFilter();
-        for (String action :
-                actions) {
+        for (String action : actions) {
             filter.addAction(action);
         }
         registerReceiver(receiver, filter);
